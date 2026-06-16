@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tu Dulcedía | Catálogo artesanal</title>
+  <meta name="description" content="Catálogo web para tomar pedidos de galletas artesanales y pan de masa madre.">
+  <style>
+    :root{
+      --crema:#fff8ec;--beige:#f3e4cb;--beige2:#ead5b8;--cafe:#563820;--cafe2:#7d5b3f;
+      --terracota:#b8653b;--terracota2:#8f492b;--verde:#48663f;--rojo:#9f3d31;
+      --blanco:#fff;--sombra:0 18px 45px rgba(86,56,32,.14);--radio:22px;--max:1120px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--cafe);
+      background:radial-gradient(circle at top left,rgba(184,101,59,.18),transparent 32rem),linear-gradient(180deg,var(--crema),#fffdf8 45%,var(--beige));line-height:1.5}
+    .contenedor{width:min(100% - 32px,var(--max));margin:auto}
+    .hero{padding:42px 0 24px}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch}
+    .card,.panel,.resumen{background:rgba(255,255,255,.82);border:1px solid rgba(86,56,32,.12);border-radius:30px;box-shadow:var(--sombra);backdrop-filter:blur(10px)}
+    .card{padding:clamp(26px,5vw,52px)} .mini{padding:28px;display:flex;flex-direction:column;justify-content:space-between}
+    .etiqueta{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:#f4dfc4;color:var(--terracota2);font-weight:800;font-size:.9rem}
+    h1,h2,h3,p{margin-top:0} h1{font-size:clamp(2.1rem,8vw,4.6rem);line-height:.98;letter-spacing:-.06em;margin:18px 0 12px;color:#442916}
+    h2{letter-spacing:-.035em;color:#442916}.subtitulo{font-size:clamp(1.04rem,2vw,1.25rem);color:var(--cafe2);max-width:720px}
+    .confianza{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}.confianza span,.mini li{background:#fbedd8;border:1px solid rgba(86,56,32,.09);border-radius:16px;padding:11px 12px;font-weight:700}
+    .mini ul{padding:0;margin:0;list-style:none;display:grid;gap:10px}.mini p{color:var(--cafe2)}
+    .seccion{padding:24px 0}.encabezado{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:18px}
+    .encabezado p{margin:0;color:var(--cafe2)}.contador{white-space:nowrap;background:var(--cafe);color:var(--crema);border-radius:999px;padding:9px 14px;font-weight:800}
+    .productos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.producto{position:relative;display:block;min-height:210px;padding:18px;border-radius:var(--radio);background:rgba(255,255,255,.88);border:1px solid rgba(86,56,32,.13);box-shadow:0 12px 28px rgba(86,56,32,.08);cursor:pointer;transition:.16s}
+    .producto:hover{transform:translateY(-2px);border-color:rgba(184,101,59,.45)}.producto input{position:absolute;opacity:0;pointer-events:none}
+    .producto-inner{height:100%;display:flex;flex-direction:column;gap:10px}.producto-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+    .producto h3{font-size:1.06rem;line-height:1.18;margin:0}.check{width:28px;height:28px;border:2px solid rgba(86,56,32,.24);border-radius:10px;display:grid;place-items:center;color:transparent;background:#fff}
+    .categoria{width:max-content;padding:5px 9px;border-radius:999px;background:#f4dfc4;color:var(--terracota2);font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+    .descripcion{color:var(--cafe2);font-size:.95rem;margin-bottom:auto}.precio{font-size:1.32rem;font-weight:900;color:var(--terracota2)}
+    .producto:has(input:checked){background:#fff7ed;border-color:rgba(184,101,59,.76);box-shadow:0 14px 32px rgba(184,101,59,.17)}.producto:has(input:checked) .check{background:var(--terracota);border-color:var(--terracota);color:#fff}
+    .panel{padding:clamp(20px,4vw,32px);margin-bottom:28px}.aviso{padding:15px 16px;border-radius:18px;border:1px solid rgba(184,101,59,.28);background:#fff2df;color:#694029;font-weight:650}.aviso strong{color:var(--terracota2)}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.campo{display:grid;gap:7px}.full{grid-column:1/-1}
+    label{font-weight:800;color:#442916}input[type=text],input[type=tel],input[type=date],textarea{width:100%;border:1px solid rgba(86,56,32,.18);border-radius:16px;padding:13px 14px;font:inherit;color:var(--cafe);background:#fffdf8;outline:none}
+    input:focus,textarea:focus{border-color:rgba(184,101,59,.72);box-shadow:0 0 0 4px rgba(184,101,59,.12)}textarea{resize:vertical;min-height:104px}.ayuda{font-size:.9rem;color:var(--cafe2)}
+    .mensaje{display:none;margin-top:16px;padding:14px 15px;border-radius:16px;font-weight:800}.visible{display:block}.mensaje.error{background:#fde7e2;color:var(--rojo);border:1px solid rgba(159,61,49,.2)}.mensaje.ok{background:#e9f4e6;color:var(--verde);border:1px solid rgba(72,102,63,.2)}
+    .acciones{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:999px;padding:13px 19px;font:inherit;font-weight:900;cursor:pointer;transition:.15s}button:hover:not(:disabled){transform:translateY(-1px)}button:disabled{opacity:.6;cursor:not-allowed}
+    .btn-principal{background:var(--terracota);color:#fff;box-shadow:0 12px 24px rgba(184,101,59,.24)}.btn-secundario{background:#f1dfc8;color:var(--cafe)}
+    .resumen{display:none;margin-top:20px;padding:22px}.resumen.visible{display:block}.resumen-lista{padding-left:18px}.total{display:flex;justify-content:space-between;border-top:1px solid rgba(86,56,32,.13);padding-top:14px;margin-top:14px;font-size:1.14rem;font-weight:900}
+    footer{text-align:center;color:var(--cafe2);padding:32px 0 44px}
+    @media(max-width:900px){.hero-grid,.productos{grid-template-columns:1fr}.confianza{grid-template-columns:1fr}.encabezado{align-items:start;flex-direction:column}}
+    @media(max-width:640px){.contenedor{width:min(100% - 24px,var(--max))}.hero{padding-top:22px}.form-grid{grid-template-columns:1fr}.acciones,.acciones button{width:100%}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="contenedor hero-grid">
+      <section class="card">
+        <span class="etiqueta">🍪 Panadería y galletas artesanales</span>
+        <h1>Tu Dulcedía</h1>
+        <p class="subtitulo">Catálogo simple para pedir galletas artesanales y pan de masa madre. Selecciona tus productos, elige una fecha y envía tu pedido en pocos pasos.</p>
+        <div class="confianza">
+          <span>🥖 Masa madre artesanal</span><span>📱 Ideal para WhatsApp</span><span>📝 Confirmación manual</span>
+        </div>
+      </section>
+      <aside class="card mini">
+        <div>
+          <h2>Pedidos simples, hechos con cariño</h2>
+          <p>Este catálogo registra tu solicitud. Luego revisaremos disponibilidad y coordinación por el canal habitual.</p>
+        </div>
+        <ul><li>Sin pago en línea por ahora</li><li>Total estimado antes de enviar</li><li>Registro directo en Google Sheets</li></ul>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="encabezado">
+          <div><h2>Catálogo</h2><p>Elige uno o más productos. Los precios están expresados en pesos chilenos.</p></div>
+          <div class="contador" id="contadorSeleccion">0 seleccionados</div>
+        </div>
+        <div class="productos" id="listaProductos"></div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor">
+        <form class="panel" id="formPedido" novalidate>
+          <h2>Datos del pedido</h2>
+          <p class="aviso"><strong>Importante:</strong> el pan de masa madre requiere 3 días de anticipación y las galletas al menos 1 día hábil. Esperamos mejorar estos tiempos de respuesta en el corto plazo.</p>
+
+          <div class="form-grid">
+            <div class="campo">
+              <label for="nombreCliente">Nombre del cliente *</label>
+              <input id="nombreCliente" type="text" autocomplete="name" placeholder="Ej: Camila Pérez" required>
+            </div>
+            <div class="campo">
+              <label for="telefonoCliente">Teléfono</label>
+              <input id="telefonoCliente" type="tel" autocomplete="tel" placeholder="Ej: +56 9 1234 5678">
+              <span class="ayuda">Opcional, útil si necesitamos confirmar algo.</span>
+            </div>
+            <div class="campo full">
+              <label for="fechaSolicitada">Fecha de retiro o entrega *</label>
+              <input id="fechaSolicitada" type="date" required>
+              <span class="ayuda" id="ayudaFecha">Selecciona productos para calcular la fecha mínima posible.</span>
+            </div>
+            <div class="campo full">
+              <label for="observacion">Observación o indicaciones especiales</label>
+              <textarea id="observacion" placeholder="Ej: retirar en la tarde, comentario especial, etc."></textarea>
+            </div>
+          </div>
+
+          <div id="mensajeFormulario" class="mensaje" role="status" aria-live="polite"></div>
+
+          <div class="acciones">
+            <button class="btn-principal" type="submit" id="btnEnviar">Enviar pedido</button>
+            <button class="btn-secundario" type="button" id="btnLimpiar">Limpiar</button>
+          </div>
+
+          <section class="resumen" id="resumenPedido">
+            <h3>Revisa tu pedido antes de enviarlo</h3>
+            <div id="contenidoResumen"></div>
+            <div class="acciones">
+              <button class="btn-principal" type="button" id="btnConfirmarEnvio">Confirmar y enviar pedido</button>
+              <button class="btn-secundario" type="button" id="btnEditarPedido">Editar pedido</button>
+            </div>
+          </section>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="contenedor">Catálogo artesanal preparado para pedidos compartidos por WhatsApp.</div></footer>
+
+  <script>
+    // CONFIGURAR AQUÍ: reemplaza esta URL por la URL /exec de tu Web App de Google Apps Script.
+    const URL_WEB_APP = "CONFIGURAR_AQUI_URL_WEB_APP_DE_APPS_SCRIPT";
+
+    const productos = [
+      { id:"galleta-vainilla-chips", nombre:"Galleta de vainilla con chips", categoria:"galleta", precio:500, descripcion:"Galleta artesanal de vainilla con chips, suave y dorada.", anticipacion_dias:0, anticipacion_habil:1 },
+      { id:"galleta-vainilla-nueces", nombre:"Galleta de vainilla con nueces", categoria:"galleta", precio:600, descripcion:"Galleta de vainilla con nueces, textura casera y sabor cálido.", anticipacion_dias:0, anticipacion_habil:1 },
+      { id:"galleta-chocolate-chips", nombre:"Galleta de chocolate con chips", categoria:"galleta", precio:500, descripcion:"Galleta de chocolate con chips, intensa y artesanal.", anticipacion_dias:0, anticipacion_habil:1 },
+      { id:"galleta-chocolate-nueces", nombre:"Galleta de chocolate con nueces", categoria:"galleta", precio:600, descripcion:"Chocolate y nueces en una galleta artesanal con carácter.", anticipacion_dias:0, anticipacion_habil:1 },
+      { id:"galleta-vainilla-chips-nueces", nombre:"Galleta de vainilla con chips y nueces", categoria:"galleta", precio:700, descripcion:"Vainilla, chips y nueces en una combinación más completa.", anticipacion_dias:0, anticipacion_habil:1 },
+      { id:"galleta-chocolate-chips-nueces", nombre:"Galleta de chocolate con chips y nueces", categoria:"galleta", precio:700, descripcion:"Galleta de chocolate con chips y nueces, sabrosa y generosa.", anticipacion_dias:0, anticipacion_habil:1 },
+      { id:"pan-masa-madre-1kg", nombre:"Pan de masa madre 1 kg aprox.", categoria:"pan", precio:4000, descripcion:"Pan artesanal de masa madre, corteza dorada y miga con personalidad.", anticipacion_dias:3, anticipacion_habil:0 }
+    ];
+
+    const $ = (selector) => document.querySelector(selector);
+    const listaProductos = $("#listaProductos");
+    const contadorSeleccion = $("#contadorSeleccion");
+    const formPedido = $("#formPedido");
+    const nombreCliente = $("#nombreCliente");
+    const telefonoCliente = $("#telefonoCliente");
+    const fechaSolicitada = $("#fechaSolicitada");
+    const observacion = $("#observacion");
+    const ayudaFecha = $("#ayudaFecha");
+    const mensajeFormulario = $("#mensajeFormulario");
+    const resumenPedido = $("#resumenPedido");
+    const contenidoResumen = $("#contenidoResumen");
+    const btnConfirmarEnvio = $("#btnConfirmarEnvio");
+    const btnEditarPedido = $("#btnEditarPedido");
+    const btnLimpiar = $("#btnLimpiar");
+    const btnEnviar = $("#btnEnviar");
+
+    const formatoCLP = new Intl.NumberFormat("es-CL", { style:"currency", currency:"CLP", maximumFractionDigits:0 });
+    let pedidoPendiente = null;
+
+    iniciar();
+
+    function iniciar(){
+      renderizarProductos();
+      actualizarEstadoSeleccion();
+      formPedido.addEventListener("submit", prepararEnvio);
+      btnConfirmarEnvio.addEventListener("click", enviarPedidoConfirmado);
+      btnEditarPedido.addEventListener("click", ocultarResumen);
+      btnLimpiar.addEventListener("click", () => limpiarFormulario(true));
+      fechaSolicitada.addEventListener("change", validarFechaEnCambio);
+    }
+
+    function renderizarProductos(){
+      listaProductos.innerHTML = productos.map((p) => `
+        <label class="producto" for="producto-${p.id}">
+          <input type="checkbox" id="producto-${p.id}" name="productos" value="${p.id}">
+          <div class="producto-inner">
+            <div class="producto-top"><h3>${p.nombre}</h3><span class="check">✓</span></div>
+            <span class="categoria">${p.categoria}</span>
+            <p class="descripcion">${p.descripcion}</p>
+            <div class="precio">${formatoCLP.format(p.precio)}</div>
+          </div>
+        </label>`).join("");
+
+      document.querySelectorAll("input[name='productos']").forEach((input) => {
+        input.addEventListener("change", () => {
+          ocultarResumen();
+          actualizarEstadoSeleccion();
+          actualizarFechaMinimaVisual();
+          limpiarMensaje();
+        });
+      });
+    }
+
+    function obtenerProductosSeleccionados(){
+      const ids = Array.from(document.querySelectorAll("input[name='productos']:checked")).map((i) => i.value);
+      return productos.filter((p) => ids.includes(p.id)).map((p) => ({ ...p, cantidad:1 }));
+    }
+
+    function actualizarEstadoSeleccion(){
+      const total = obtenerProductosSeleccionados().length;
+      contadorSeleccion.textContent = total === 1 ? "1 seleccionado" : `${total} seleccionados`;
+    }
+
+    function actualizarFechaMinimaVisual(){
+      const seleccionados = obtenerProductosSeleccionados();
+      if(!seleccionados.length){
+        fechaSolicitada.removeAttribute("min");
+        ayudaFecha.textContent = "Selecciona productos para calcular la fecha mínima posible.";
+        return;
+      }
+      const regla = calcularReglaAnticipacion(seleccionados);
+      fechaSolicitada.min = formatoFechaInput(regla.fechaMinima);
+      ayudaFecha.textContent = `${regla.mensajeCorto} Fecha mínima sugerida: ${formatearFechaLarga(regla.fechaMinima)}.`;
+    }
+
+    function calcularReglaAnticipacion(seleccionados){
+      const hoy = obtenerFechaLocalSinHora();
+      const incluyePan = seleccionados.some((p) => p.categoria === "pan");
+      const incluyeGalletas = seleccionados.some((p) => p.categoria === "galleta");
+
+      if(incluyePan){
+        const fechaMinima = sumarDiasCorridos(hoy, 3);
+        return {
+          fechaMinima,
+          mensajeCorto: incluyeGalletas
+            ? "Tu selección incluye pan y galletas; se aplica la regla más exigente: 3 días de anticipación."
+            : "El pan de masa madre requiere 3 días de anticipación.",
+          mensajeError: `El pan de masa madre requiere al menos 3 días de anticipación. Puedes seleccionar desde el ${formatearFechaLarga(fechaMinima)}.`
+        };
+      }
+
+      const fechaMinima = sumarDiasHabiles(hoy, 1);
+      return {
+        fechaMinima,
+        mensajeCorto: "Las galletas requieren al menos 1 día hábil de anticipación.",
+        mensajeError: `Las galletas requieren al menos 1 día hábil de anticipación. Puedes seleccionar desde el ${formatearFechaLarga(fechaMinima)}.`
+      };
+    }
+
+    function validarFechaSeleccionada(seleccionados){
+      if(!fechaSolicitada.value) return { ok:false, mensaje:"Selecciona una fecha de retiro o entrega." };
+      if(!seleccionados.length) return { ok:false, mensaje:"Selecciona al menos un producto antes de elegir la fecha." };
+
+      const fechaElegida = crearFechaDesdeInput(fechaSolicitada.value);
+      const regla = calcularReglaAnticipacion(seleccionados);
+      if(fechaElegida < regla.fechaMinima) return { ok:false, mensaje:regla.mensajeError };
+
+      return { ok:true, mensaje:"Fecha válida." };
+    }
+
+    function validarFechaEnCambio(){
+      ocultarResumen();
+      const validacion = validarFechaSeleccionada(obtenerProductosSeleccionados());
+      if(!validacion.ok && fechaSolicitada.value) mostrarMensaje(validacion.mensaje, "error");
+      else limpiarMensaje();
+    }
+
+    function prepararEnvio(evento){
+      evento.preventDefault();
+      ocultarResumen();
+      limpiarMensaje();
+
+      const seleccionados = obtenerProductosSeleccionados();
+      if(!nombreCliente.value.trim()){
+        mostrarMensaje("Ingresa el nombre del cliente.", "error");
+        nombreCliente.focus();
+        return;
+      }
+      if(!seleccionados.length){
+        mostrarMensaje("Selecciona al menos un producto del catálogo.", "error");
+        listaProductos.scrollIntoView({ behavior:"smooth", block:"start" });
+        return;
+      }
+
+      const validacionFecha = validarFechaSeleccionada(seleccionados);
+      if(!validacionFecha.ok){
+        mostrarMensaje(validacionFecha.mensaje, "error");
+        fechaSolicitada.focus();
+        return;
+      }
+
+      pedidoPendiente = construirPedido(seleccionados);
+      mostrarResumen(pedidoPendiente);
+    }
+
+    function construirPedido(seleccionados){
+      const totalEstimado = seleccionados.reduce((total, p) => total + p.precio * p.cantidad, 0);
+      const regla = calcularReglaAnticipacion(seleccionados);
+
+      return {
+        nombreCliente: nombreCliente.value.trim(),
+        telefonoCliente: telefonoCliente.value.trim(),
+        fechaSolicitada: fechaSolicitada.value,
+        productosSeleccionados: seleccionados.map((p) => ({
+          id:p.id, nombre:p.nombre, categoria:p.categoria, precio:p.precio, cantidad:p.cantidad
+        })),
+        observacion: observacion.value.trim(),
+        totalEstimado,
+        estado:"Pendiente",
+        reglaAnticipacionAplicada: regla.mensajeCorto,
+        origen:"Catálogo web GitHub Pages"
+      };
+    }
+
+    function mostrarResumen(pedido){
+      const productosHtml = pedido.productosSeleccionados.map((p) =>
+        `<li>${escaparHtml(p.nombre)} — ${formatoCLP.format(p.precio)} <span class="ayuda">(cantidad preparada: ${p.cantidad})</span></li>`
+      ).join("");
+
+      contenidoResumen.innerHTML = `
+        <p><strong>Cliente:</strong> ${escaparHtml(pedido.nombreCliente)}</p>
+        <p><strong>Teléfono:</strong> ${pedido.telefonoCliente ? escaparHtml(pedido.telefonoCliente) : "No indicado"}</p>
+        <p><strong>Fecha solicitada:</strong> ${formatearFechaInput(pedido.fechaSolicitada)}</p>
+        <p><strong>Regla aplicada:</strong> ${pedido.reglaAnticipacionAplicada}</p>
+        <p><strong>Productos:</strong></p>
+        <ul class="resumen-lista">${productosHtml}</ul>
+        ${pedido.observacion ? `<p><strong>Observación:</strong> ${escaparHtml(pedido.observacion)}</p>` : ""}
+        <div class="total"><span>Total estimado</span><span>${formatoCLP.format(pedido.totalEstimado)}</span></div>
+      `;
+      resumenPedido.classList.add("visible");
+      resumenPedido.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+
+    async function enviarPedidoConfirmado(){
+      if(!pedidoPendiente){
+        mostrarMensaje("Primero revisa el resumen del pedido.", "error");
+        return;
+      }
+      if(!URL_WEB_APP || URL_WEB_APP.includes("CONFIGURAR_AQUI")){
+        mostrarMensaje("Falta configurar la URL del Web App de Google Apps Script en index.html.", "error");
+        return;
+      }
+
+      btnConfirmarEnvio.disabled = true;
+      btnEnviar.disabled = true;
+      mostrarMensaje("Enviando pedido...", "ok");
+
+      try{
+        const respuesta = await fetch(URL_WEB_APP, {
+          method:"POST",
+          headers:{ "Content-Type":"text/plain;charset=utf-8" },
+          body: JSON.stringify(pedidoPendiente)
+        });
+
+        const texto = await respuesta.text();
+        let datos = {};
+        try{ datos = JSON.parse(texto); } catch(e){ datos = { exito:respuesta.ok, mensaje:texto }; }
+
+        if(!respuesta.ok || datos.exito === false){
+          throw new Error(datos.mensaje || "No se pudo registrar el pedido.");
+        }
+
+        mostrarMensaje("Pedido enviado correctamente. Lo revisaremos y confirmaremos manualmente.", "ok");
+        limpiarFormulario(false);
+      }catch(error){
+        console.error(error);
+        mostrarMensaje("No se pudo enviar el pedido. Revisa la URL /exec, los permisos de Apps Script o la conexión a internet.", "error");
+      }finally{
+        btnConfirmarEnvio.disabled = false;
+        btnEnviar.disabled = false;
+      }
+    }
+
+    function limpiarFormulario(limpiarMensajeTambien){
+      formPedido.reset();
+      pedidoPendiente = null;
+      ocultarResumen();
+      actualizarEstadoSeleccion();
+      actualizarFechaMinimaVisual();
+      if(limpiarMensajeTambien) limpiarMensaje();
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    function ocultarResumen(){
+      resumenPedido.classList.remove("visible");
+      contenidoResumen.innerHTML = "";
+      pedidoPendiente = null;
+    }
+
+    function mostrarMensaje(texto, tipo){
+      mensajeFormulario.textContent = texto;
+      mensajeFormulario.className = `mensaje visible ${tipo}`;
+    }
+
+    function limpiarMensaje(){
+      mensajeFormulario.textContent = "";
+      mensajeFormulario.className = "mensaje";
+    }
+
+    function obtenerFechaLocalSinHora(){
+      const ahora = new Date();
+      return new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+    }
+
+    function crearFechaDesdeInput(valor){
+      const [anio, mes, dia] = valor.split("-").map(Number);
+      return new Date(anio, mes - 1, dia);
+    }
+
+    function sumarDiasCorridos(fechaBase, dias){
+      const fecha = new Date(fechaBase);
+      fecha.setDate(fecha.getDate() + dias);
+      return fecha;
+    }
+
+    function sumarDiasHabiles(fechaBase, diasHabiles){
+      const fecha = new Date(fechaBase);
+      let sumados = 0;
+      while(sumados < diasHabiles){
+        fecha.setDate(fecha.getDate() + 1);
+        if(esDiaHabil(fecha)) sumados++;
+      }
+      return fecha;
+    }
+
+    function esDiaHabil(fecha){
+      const dia = fecha.getDay();
+      return dia >= 1 && dia <= 5;
+    }
+
+    function formatoFechaInput(fecha){
+      const anio = fecha.getFullYear();
+      const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+      const dia = String(fecha.getDate()).padStart(2, "0");
+      return `${anio}-${mes}-${dia}`;
+    }
+
+    function formatearFechaLarga(fecha){
+      return fecha.toLocaleDateString("es-CL", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+    }
+
+    function formatearFechaInput(valor){
+      return formatearFechaLarga(crearFechaDesdeInput(valor));
+    }
+
+    function escaparHtml(texto){
+      const div = document.createElement("div");
+      div.textContent = texto;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
