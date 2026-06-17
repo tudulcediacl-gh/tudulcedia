@@ -5,8 +5,8 @@ const CONFIG = {
   NOMBRE_HOJA: "Pedidos",
   NOMBRE_HOJA_HISTORIAL: "Historial pedidos",
   ESTADO_INICIAL: "Pendiente",
-  EMAIL_ALERTA: "mat.echeverria@gmail.com",
-  WHATSAPP_COMPROBANTE: "+56 9 5422 6146",
+  EMAIL_ALERTA: "tudulcediacl@gmail.com",
+  WHATSAPP_COMPROBANTE: "+56 9 7849 6366",
   MINUTOS_ANTI_DUPLICADO: 15
 };
 
