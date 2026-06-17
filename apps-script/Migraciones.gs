@@ -7,6 +7,7 @@ const ORDEN_OPERATIVO_HOJA_PEDIDOS = [
   "Folio pedido",
   "Estado",
   "Estado de pago",
+  "Estado operativo",
   "Teléfono",
   "Nombre cliente",
   "Fecha solicitada",
@@ -16,7 +17,11 @@ const ORDEN_OPERATIVO_HOJA_PEDIDOS = [
   "Requiere datos transferencia",
   "Tipo entrega",
   "Observación",
+  "Observación interna",
   "Fecha/hora registro",
+  "Fecha confirmado",
+  "Fecha pagado",
+  "Fecha entregado",
   "Origen",
   "Indicación de pago",
   "Detalle JSON"
@@ -25,11 +30,12 @@ const ORDEN_OPERATIVO_HOJA_PEDIDOS = [
 function reordenarHojaPedidos() {
   const libro = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const hoja = obtenerHojaPedidos_(libro);
+  obtenerHojaHistorial_(libro);
   reordenarColumnasPedidos_(hoja);
   hoja.setFrozenRows(1);
   hoja.setFrozenColumns(1);
   hoja.autoResizeColumns(1, hoja.getLastColumn());
-  return "Hoja Pedidos reordenada correctamente: folio, estados, teléfono y luego el resto de campos.";
+  return "Hoja Pedidos reordenada correctamente: folio, estados, teléfono, fechas de control y trazabilidad.";
 }
 
 function reordenarColumnasPedidos_(hoja) {
