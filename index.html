@@ -98,10 +98,6 @@
           bar.className='mobile-cart-bar';
           bar.innerHTML='<div class="mobile-cart-info"><strong id="mobileCartMain">0 productos · $0</strong><span>Resumen de tu pedido</span></div><button type="button" class="mobile-cart-btn">Continuar</button>';
           document.body.appendChild(bar);
-          bar.querySelector('button').onclick=function(){
-            const target=document.querySelector('#leadNotice')||document.querySelector('#orderFlow section:nth-of-type(2)')||document.querySelector('#send');
-            if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-          };
           return bar;
         }
         function enhanceCards(){
@@ -163,12 +159,33 @@
       <\/script>
     `;
 
+    const flowValidationScript = `
+      <script>
+      (function(){
+        let productStep=null,formStep=null,originalSend=null,wrapped=false;
+        const css='.td-step-hidden{display:none!important}.td-flow-steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0 14px}.td-flow-chip{border-radius:999px;padding:8px 12px;border:1px solid #ead8bd;background:#fffdf8;color:#7d5b3f;font-weight:950}.td-flow-chip.active{background:#48663f;color:#fff}.td-step-actions,.td-form-top-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.td-step-actions button{flex:1;min-width:220px}.td-form-top-actions{margin:0 0 12px}.td-form-top-actions button{background:#f1dfc8;color:#563820}.td-forgot-box{margin:14px 0;padding:16px;border-radius:20px;border:2px solid #ead8bd;background:linear-gradient(135deg,#fff2df,#fffaf1)}.td-forgot-box strong{display:block;color:#442916;font-size:1.08rem;margin-bottom:4px}.td-forgot-box p{margin:.2rem 0 .75rem;color:#684029;font-weight:750}.td-phone-help{display:block;margin-top:6px;color:#7d5b3f;font-size:.84rem;font-weight:750}.td-error-text{display:block;margin-top:6px;color:#9f3d31;font-size:.85rem;font-weight:900}.td-input-error{border-color:#9f3d31!important;background:#fff7f4!important}@media(max-width:640px){.td-flow-steps{position:sticky;top:0;z-index:40;background:#fff8ecdd;padding:8px 0}.td-flow-chip{font-size:.82rem;padding:7px 10px}.td-step-actions button,.td-form-top-actions button{width:100%;min-width:0}}';
+        function q(s){return document.querySelector(s)}
+        function count(){let n=0;document.querySelectorAll('.product.selected').forEach(c=>{const i=c.querySelector('.qty input');n+=parseInt(i&&i.value||'1',10)||1});return n}
+        function steps(){const f=q('#orderFlow');return f?Array.from(f.children).filter(x=>x.tagName&&x.classList.contains('box')):[]}
+        function chips(n){document.querySelectorAll('.td-flow-chip').forEach((c,i)=>c.classList.toggle('active',i===n-1))}
+        function showProducts(scroll=true){if(!productStep||!formStep)return;productStep.classList.remove('td-step-hidden');formStep.classList.add('td-step-hidden');chips(1);if(scroll)productStep.scrollIntoView({behavior:'smooth',block:'start'})}
+        function showForm(scroll=true){if(count()<1){const m=q('#catalogMsg');if(m){m.textContent='Selecciona al menos un producto antes de continuar.';m.classList.remove('hidden')}return}productStep.classList.add('td-step-hidden');formStep.classList.remove('td-step-hidden');chips(2);q('#mobileCartBar')?.classList.remove('show');if(scroll)formStep.scrollIntoView({behavior:'smooth',block:'start'})}
+        function phoneOk(show){const code=q('#phoneCode'),phone=q('#phoneNumber'),err=q('#tdPhoneError');if(!code||!phone)return true;let c=String(code.value||'').replace(/\s/g,'');if(c&&!c.startsWith('+'))c='+'+c;const d=String(phone.value||'').replace(/\D/g,'');let ok=c==='+56'&&d.length===9&&d[0]==='9';code.classList.toggle('td-input-error',!ok&&show);phone.classList.toggle('td-input-error',!ok&&show);if(err){err.textContent='Usa +56 y un celular chileno válido: 9 dígitos comenzando con 9.';err.style.display=!ok&&show?'block':'none'}if(ok){code.value='+56';phone.value=d.replace(/(\d)(\d{4})(\d{4})/,'$1 $2 $3')}return ok}
+        function check(){let bad=[];const name=q('#name'),date=q('#dateLabel');if(count()<1)bad.push('selecciona productos');if(name&&name.value.trim().length<3){bad.push('ingresa tu nombre');name.classList.add('td-input-error')}else if(name)name.classList.remove('td-input-error');if(!phoneOk(true))bad.push('corrige el teléfono');if(date&&/seleccionar/i.test(date.textContent))bad.push('selecciona fecha');if(bad.length){showForm(true);const m=q('#msg');if(m){m.textContent='Antes de enviar, '+bad.join(', ')+'.';m.className='msg show err'}return false}return true}
+        function ui(){const s=steps();if(s.length<2)return;productStep=s[0];formStep=s[1];if(!q('#tdFlowCss')){const st=document.createElement('style');st.id='tdFlowCss';st.textContent=css;document.head.appendChild(st)}if(!q('#tdFlowSteps')){const nav=document.createElement('div');nav.id='tdFlowSteps';nav.className='td-flow-steps';nav.innerHTML='<span class="td-flow-chip active">1 · Elige productos</span><span class="td-flow-chip">2 · Datos y envío</span>';productStep.parentNode.insertBefore(nav,productStep)}if(!q('#tdContinueForm')){const a=document.createElement('div');a.className='td-step-actions';a.innerHTML='<button id="tdContinueForm" type="button" class="primary">Continuar con datos del pedido</button>';(productStep.querySelector('.summary')||productStep).insertAdjacentElement('afterend',a);q('#tdContinueForm').onclick=()=>showForm(true)}if(!q('#tdBackTop')){const a=document.createElement('div');a.className='td-form-top-actions';a.innerHTML='<button id="tdBackTop" type="button">← Volver a productos</button>';const h=formStep.querySelector('h2');h?h.insertAdjacentElement('afterend',a):formStep.insertAdjacentElement('afterbegin',a);q('#tdBackTop').onclick=()=>showProducts(true)}if(!q('#tdForgotBox')){const b=document.createElement('div');b.id='tdForgotBox';b.className='td-forgot-box';b.innerHTML='<strong>¿Olvidaste algo?</strong><p>Antes de enviar, revisa cantidades, fecha solicitada y método de pago. Puedes volver al catálogo para agregar o quitar productos.</p><button id="tdBackForgot" type="button" class="secondary">Revisar productos</button>';const act=formStep.querySelector('.actions');act?act.parentNode.insertBefore(b,act):formStep.appendChild(b);q('#tdBackForgot').onclick=()=>showProducts(true)}const phone=q('#phoneNumber'),code=q('#phoneCode');if(phone&&!q('#tdPhoneError')){const e=document.createElement('small');e.id='tdPhoneError';e.className='td-error-text';e.style.display='none';phone.closest('.field')?.appendChild(e)}if(code&&!q('#tdPhoneHelp')){const h=document.createElement('small');h.id='tdPhoneHelp';h.className='td-phone-help';h.textContent='Usa +56 y número celular chileno. Ej: +56 / 9 7849 6366.';phone.closest('.field')?.appendChild(h)}[code,phone].forEach(x=>x&&!x.dataset.tdLive&&(x.dataset.tdLive='1',x.addEventListener('input',()=>phoneOk(false))));if(!formStep.dataset.stepReady){formStep.dataset.stepReady='1';showProducts(false)}}
+        function wrap(){const b=q('#send');if(!b||wrapped)return;wrapped=true;originalSend=b.onclick;b.onclick=function(e){if(!check()){e&&e.preventDefault();return false}if(typeof originalSend==='function')return originalSend.call(this,e)}}
+        document.addEventListener('click',e=>{const cart=e.target.closest&&e.target.closest('.mobile-cart-btn');if(cart){e.preventDefault();e.stopPropagation();showForm(true)}},true);
+        function init(){ui();wrap()}document.addEventListener('click',()=>setTimeout(init,80),true);document.addEventListener('input',()=>setTimeout(init,40),true);new MutationObserver(()=>setTimeout(init,120)).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});setTimeout(init,250);setTimeout(init,900);setTimeout(init,1600);
+      })();
+      <\/script>
+    `;
+
     fetch('./catalogo-dinamico-v8.html', {cache:'no-store'})
       .then(r => r.text())
       .then(html => {
         reemplazos.forEach(([oldValue, newValue]) => { html = html.replace(oldValue, newValue); });
         html = html.replace('</style>', cssFinal + '</style>');
-        html = html.replace('</body>', uxMobileScript + '</body>');
+        html = html.replace('</body>', uxMobileScript + flowValidationScript + '</body>');
         document.open();
         document.write(html);
         document.close();
