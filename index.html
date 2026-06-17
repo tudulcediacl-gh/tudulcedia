@@ -32,11 +32,46 @@
       [/mat\.echeverria@gmail\.com/g, 'tudulcediacl@gmail.com']
     ];
 
+    const cssFinal = `
+      #orderFlow .actions a.btn.green{display:none!important}
+      @media(max-width:640px){
+        body{font-size:15px}
+        .wrap{width:min(100% - 14px,1120px)!important}
+        .hero{padding:10px 0 2px!important}
+        .box{padding:14px!important;margin:9px 0!important;border-radius:18px!important}
+        h1{font-size:2.15rem!important;line-height:.98!important;margin:.12em 0!important}
+        h2{font-size:1.25rem!important;margin:.15em 0 .35em!important}
+        .muted{font-size:.9rem!important;line-height:1.35!important}
+        .products{grid-template-columns:1fr!important;gap:9px!important}
+        .product{padding:11px 12px!important;border-radius:16px!important;gap:7px!important;box-shadow:none!important}
+        .product:hover{transform:none!important}
+        .top{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important;align-items:start!important}
+        .product h3{font-size:1rem!important;line-height:1.08!important;margin:0!important}
+        .select-badge{min-width:88px!important;width:auto!important;padding:7px 11px!important;font-size:.82rem!important;border-width:1px!important}
+        .category-row{margin-top:0!important}
+        .category-chip{padding:4px 9px!important;font-size:.76rem!important}
+        .selected-text{font-size:.78rem!important}
+        .desc{font-size:.84rem!important;line-height:1.25!important;margin:0!important}
+        .price{font-size:1.2rem!important;margin:0!important}
+        .qty{grid-template-columns:1fr 78px!important;padding:7px 9px!important;border-radius:12px!important;gap:7px!important}
+        .qty input{padding:8px!important;border-radius:11px!important;text-align:center!important}
+        .product small,.product .muted{font-size:.78rem!important}
+        .summary{padding:12px!important;border-radius:16px!important}
+        .summary h3{margin:.1em 0 .35em!important}
+        .total{font-size:1.02rem!important;padding-top:9px!important}
+        .lead-notice,.split-box{padding:12px!important;border-radius:16px!important;margin:10px 0!important}
+        .field input,.field textarea,.field select,.date-trigger{padding:10px!important;border-radius:12px!important}
+        .field textarea{min-height:68px!important}
+        .actions{gap:8px!important;margin-top:10px!important}
+        button,a.btn{padding:11px 13px!important}
+      }
+    `;
+
     fetch('./catalogo-dinamico-v8.html', {cache:'no-store'})
       .then(r => r.text())
       .then(html => {
         reemplazos.forEach(([oldValue, newValue]) => { html = html.replace(oldValue, newValue); });
-        html = html.replace('</style>', '#orderFlow .actions a.btn.green{display:none!important}</style>');
+        html = html.replace('</style>', cssFinal + '</style>');
         document.open();
         document.write(html);
         document.close();
