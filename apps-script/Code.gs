@@ -6,6 +6,7 @@
  * - Guarda pedidos en Google Sheets.
  * - Envía alerta por correo.
  * - Expone endpoints admin para listar pedidos y actualizar estado / estado de pago.
+ * - Registra fechas automáticas e historial de cambios.
  *
  * Seguridad admin:
  * - No hardcodear la clave en el código.
@@ -15,6 +16,7 @@
 const CONFIG = {
   SPREADSHEET_ID: "1rePCmh_N_XT964-BD3BeHJfkh8YhueOD_EDVif-SGGw",
   NOMBRE_HOJA: "Pedidos",
+  NOMBRE_HOJA_HISTORIAL: "Historial pedidos",
   ESTADO_INICIAL: "Pendiente",
   EMAIL_ALERTA: "mat.echeverria@gmail.com",
   WHATSAPP_COMPROBANTE: "+56 9 5422 6146"
@@ -22,21 +24,36 @@ const CONFIG = {
 
 const COLUMNAS = [
   "Folio pedido",
-  "Fecha/hora registro",
-  "Nombre cliente",
+  "Estado",
+  "Estado de pago",
+  "Estado operativo",
   "Teléfono",
+  "Nombre cliente",
   "Fecha solicitada",
   "Productos seleccionados",
-  "Observación",
   "Total estimado",
   "Método de pago",
-  "Estado de pago",
   "Requiere datos transferencia",
-  "Indicación de pago",
-  "Estado",
   "Tipo entrega",
+  "Observación",
+  "Observación interna",
+  "Fecha/hora registro",
+  "Fecha confirmado",
+  "Fecha pagado",
+  "Fecha entregado",
   "Origen",
+  "Indicación de pago",
   "Detalle JSON"
+];
+
+const COLUMNAS_HISTORIAL = [
+  "Fecha/hora cambio",
+  "Folio pedido",
+  "Campo",
+  "Valor anterior",
+  "Valor nuevo",
+  "Origen",
+  "Observación interna"
 ];
 
 const ESTADOS_PEDIDO = [
@@ -126,6 +143,8 @@ function doPost(e) {
     const metodoPago = pedido.metodoPago || "Transferencia bancaria";
     const requiereDatosTransferencia = pedido.requiereDatosTransferencia === true || metodoPago === "Transferencia bancaria";
     const estadoPago = pedido.estadoPago || (metodoPago === "Transferencia bancaria" ? "Pendiente de comprobante" : "Pago al retirar");
+    const estadoPedido = CONFIG.ESTADO_INICIAL;
+    const estadoOperativo = calcularEstadoOperativo_(estadoPedido, estadoPago);
     const indicacionPago = pedido.indicacionPago || (metodoPago === "Transferencia bancaria"
       ? "Enviar datos de transferencia por WhatsApp después de confirmar disponibilidad y solicitar comprobante al " + CONFIG.WHATSAPP_COMPROBANTE + "."
       : "Cliente pagará al retirar o recibir el pedido.");
@@ -138,6 +157,8 @@ function doPost(e) {
       folioPedido: folioPedido,
       metodoPago: metodoPago,
       estadoPago: estadoPago,
+      estado: estadoPedido,
+      estadoOperativo: estadoOperativo,
       requiereDatosTransferencia: requiereDatosTransferencia,
       indicacionPago: indicacionPago,
       tipoEntrega: tipoEntrega
@@ -145,20 +166,25 @@ function doPost(e) {
 
     escribirFilaPorEncabezado_(hoja, {
       "Folio pedido": folioPedido,
-      "Fecha/hora registro": new Date(),
-      "Nombre cliente": pedido.nombreCliente,
+      "Estado": estadoPedido,
+      "Estado de pago": estadoPago,
+      "Estado operativo": estadoOperativo,
       "Teléfono": pedido.telefonoCliente || "",
+      "Nombre cliente": pedido.nombreCliente,
       "Fecha solicitada": pedido.fechaSolicitada,
       "Productos seleccionados": productosTexto,
-      "Observación": pedido.observacion || "",
       "Total estimado": Number(pedido.totalEstimado || 0),
       "Método de pago": metodoPago,
-      "Estado de pago": estadoPago,
       "Requiere datos transferencia": requiereDatosTransferencia ? "Sí" : "No",
-      "Indicación de pago": indicacionPago,
-      "Estado": CONFIG.ESTADO_INICIAL,
       "Tipo entrega": tipoEntrega,
+      "Observación": pedido.observacion || "",
+      "Observación interna": "",
+      "Fecha/hora registro": new Date(),
+      "Fecha confirmado": "",
+      "Fecha pagado": "",
+      "Fecha entregado": "",
       "Origen": pedido.origen || "Catálogo web",
+      "Indicación de pago": indicacionPago,
       "Detalle JSON": JSON.stringify(detallePedido)
     });
 
@@ -193,9 +219,11 @@ function doPost(e) {
 function migrarHojaPedidos() {
   const libro = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const hoja = obtenerHojaPedidos_(libro);
+  obtenerHojaHistorial_(libro);
   hoja.setFrozenRows(1);
+  hoja.setFrozenColumns(1);
   hoja.autoResizeColumns(1, hoja.getLastColumn());
-  return "Hoja migrada correctamente. No se borraron pedidos existentes.";
+  return "Hoja migrada correctamente. Se aseguraron columnas de fechas, observación interna e historial.";
 }
 
 function probarEnvioCorreo() {
@@ -210,7 +238,6 @@ function probarEnvioCorreo() {
 }
 
 function configurarAdminTokenTemporal() {
-  // Cambia el valor antes de ejecutar esta función manualmente una sola vez.
   const token = "CAMBIA_ESTA_CLAVE_PRIVADA";
 
   if (token === "CAMBIA_ESTA_CLAVE_PRIVADA") {
@@ -293,6 +320,10 @@ function adminListarPedidos_() {
   });
 
   const pedidos = valores.map(function(fila) {
+    const estado = obtenerValorFila_(fila, indice, "Estado") || "Pendiente";
+    const estadoPago = obtenerValorFila_(fila, indice, "Estado de pago") || "";
+    const estadoOperativoGuardado = obtenerValorFila_(fila, indice, "Estado operativo");
+
     return {
       folioPedido: obtenerValorFila_(fila, indice, "Folio pedido"),
       fechaRegistro: formatearValor_(obtenerValorFila_(fila, indice, "Fecha/hora registro")),
@@ -301,13 +332,18 @@ function adminListarPedidos_() {
       fechaSolicitada: formatearValor_(obtenerValorFila_(fila, indice, "Fecha solicitada")),
       productosTexto: obtenerValorFila_(fila, indice, "Productos seleccionados"),
       observacion: obtenerValorFila_(fila, indice, "Observación"),
+      observacionInterna: obtenerValorFila_(fila, indice, "Observación interna"),
       totalEstimado: obtenerValorFila_(fila, indice, "Total estimado"),
       metodoPago: obtenerValorFila_(fila, indice, "Método de pago"),
-      estadoPago: obtenerValorFila_(fila, indice, "Estado de pago"),
+      estadoPago: estadoPago,
+      estadoOperativo: estadoOperativoGuardado || calcularEstadoOperativo_(estado, estadoPago),
       requiereDatosTransferencia: obtenerValorFila_(fila, indice, "Requiere datos transferencia"),
       indicacionPago: obtenerValorFila_(fila, indice, "Indicación de pago"),
-      estado: obtenerValorFila_(fila, indice, "Estado"),
+      estado: estado,
       tipoEntrega: obtenerValorFila_(fila, indice, "Tipo entrega"),
+      fechaConfirmado: formatearValor_(obtenerValorFila_(fila, indice, "Fecha confirmado")),
+      fechaPagado: formatearValor_(obtenerValorFila_(fila, indice, "Fecha pagado")),
+      fechaEntregado: formatearValor_(obtenerValorFila_(fila, indice, "Fecha entregado")),
       origen: obtenerValorFila_(fila, indice, "Origen")
     };
   });
@@ -316,7 +352,7 @@ function adminListarPedidos_() {
 
   return {
     exito: true,
-    pedidos: pedidos.slice(0, 100)
+    pedidos: pedidos.slice(0, 150)
   };
 }
 
@@ -324,6 +360,9 @@ function adminActualizarPedido_(parametros) {
   const folio = String(parametros.folio || "").trim();
   const nuevoEstado = String(parametros.estado || "").trim();
   const nuevoEstadoPago = String(parametros.estadoPago || "").trim();
+  const observacionInterna = parametros.observacionInterna !== undefined
+    ? String(parametros.observacionInterna || "").trim()
+    : null;
 
   if (!folio) {
     throw new Error("Falta el folio del pedido.");
@@ -339,59 +378,63 @@ function adminActualizarPedido_(parametros) {
 
   const libro = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const hoja = obtenerHojaPedidos_(libro);
-  const ultimaFila = hoja.getLastRow();
-  const ultimaColumna = hoja.getLastColumn();
-
-  if (ultimaFila < 2) {
-    throw new Error("No hay pedidos registrados.");
-  }
-
-  const encabezados = hoja
-    .getRange(1, 1, 1, ultimaColumna)
-    .getValues()[0]
-    .map(function(valor) {
-      return String(valor || "").trim();
-    });
-
-  const colFolio = encabezados.indexOf("Folio pedido") + 1;
-  const colEstado = encabezados.indexOf("Estado") + 1;
-  const colEstadoPago = encabezados.indexOf("Estado de pago") + 1;
-
-  if (!colFolio || !colEstado || !colEstadoPago) {
-    throw new Error("Faltan columnas requeridas: Folio pedido, Estado o Estado de pago.");
-  }
-
-  const folios = hoja
-    .getRange(2, colFolio, ultimaFila - 1, 1)
-    .getValues();
-
-  let filaObjetivo = 0;
-
-  for (let i = 0; i < folios.length; i++) {
-    if (String(folios[i][0]).trim() === folio) {
-      filaObjetivo = i + 2;
-      break;
-    }
-  }
+  const historial = obtenerHojaHistorial_(libro);
+  const filaObjetivo = buscarFilaPorFolio_(hoja, folio);
 
   if (!filaObjetivo) {
     throw new Error("No se encontró el pedido " + folio + ".");
   }
 
-  if (nuevoEstado) {
-    hoja.getRange(filaObjetivo, colEstado).setValue(nuevoEstado);
+  const mapa = obtenerMapaEncabezados_(hoja);
+  const ahora = new Date();
+  const estadoAnterior = obtenerCeldaPorMapa_(hoja, filaObjetivo, mapa, "Estado");
+  const estadoPagoAnterior = obtenerCeldaPorMapa_(hoja, filaObjetivo, mapa, "Estado de pago");
+  const observacionAnterior = obtenerCeldaPorMapa_(hoja, filaObjetivo, mapa, "Observación interna");
+  const estadoFinal = nuevoEstado || estadoAnterior || "Pendiente";
+  const estadoPagoFinal = nuevoEstadoPago || estadoPagoAnterior || "";
+  const estadoOperativoFinal = calcularEstadoOperativo_(estadoFinal, estadoPagoFinal);
+  const cambios = [];
+
+  if (nuevoEstado && nuevoEstado !== estadoAnterior) {
+    setCeldaPorMapa_(hoja, filaObjetivo, mapa, "Estado", nuevoEstado);
+    cambios.push([ahora, folio, "Estado", estadoAnterior, nuevoEstado, "Admin dashboard", observacionInterna || ""]);
   }
 
-  if (nuevoEstadoPago) {
-    hoja.getRange(filaObjetivo, colEstadoPago).setValue(nuevoEstadoPago);
+  if (nuevoEstadoPago && nuevoEstadoPago !== estadoPagoAnterior) {
+    setCeldaPorMapa_(hoja, filaObjetivo, mapa, "Estado de pago", nuevoEstadoPago);
+    cambios.push([ahora, folio, "Estado de pago", estadoPagoAnterior, nuevoEstadoPago, "Admin dashboard", observacionInterna || ""]);
+  }
+
+  setCeldaPorMapa_(hoja, filaObjetivo, mapa, "Estado operativo", estadoOperativoFinal);
+
+  if (observacionInterna !== null && observacionInterna !== observacionAnterior) {
+    setCeldaPorMapa_(hoja, filaObjetivo, mapa, "Observación interna", observacionInterna);
+    cambios.push([ahora, folio, "Observación interna", observacionAnterior, observacionInterna, "Admin dashboard", observacionInterna || ""]);
+  }
+
+  if (estadoFinal !== "Pendiente") {
+    setFechaSiVacia_(hoja, filaObjetivo, mapa, "Fecha confirmado", ahora);
+  }
+
+  if (estadoPagoFinal === "Pagado") {
+    setFechaSiVacia_(hoja, filaObjetivo, mapa, "Fecha pagado", ahora);
+  }
+
+  if (estadoFinal === "Entregado") {
+    setFechaSiVacia_(hoja, filaObjetivo, mapa, "Fecha entregado", ahora);
+  }
+
+  if (cambios.length > 0) {
+    historial.getRange(historial.getLastRow() + 1, 1, cambios.length, COLUMNAS_HISTORIAL.length).setValues(cambios);
   }
 
   return {
     exito: true,
     mensaje: "Pedido actualizado correctamente.",
     folio: folio,
-    estado: nuevoEstado,
-    estadoPago: nuevoEstadoPago
+    estado: estadoFinal,
+    estadoPago: estadoPagoFinal,
+    estadoOperativo: estadoOperativoFinal
   };
 }
 
@@ -414,13 +457,25 @@ function obtenerHojaPedidos_(libro) {
     hoja = libro.insertSheet(CONFIG.NOMBRE_HOJA);
   }
 
-  asegurarColumnas_(hoja);
+  asegurarColumnas_(hoja, COLUMNAS);
   return hoja;
 }
 
-function asegurarColumnas_(hoja) {
+function obtenerHojaHistorial_(libro) {
+  let hoja = libro.getSheetByName(CONFIG.NOMBRE_HOJA_HISTORIAL);
+
+  if (!hoja) {
+    hoja = libro.insertSheet(CONFIG.NOMBRE_HOJA_HISTORIAL);
+  }
+
+  asegurarColumnas_(hoja, COLUMNAS_HISTORIAL);
+  hoja.setFrozenRows(1);
+  return hoja;
+}
+
+function asegurarColumnas_(hoja, columnasDeseadas) {
   if (hoja.getLastRow() === 0) {
-    hoja.getRange(1, 1, 1, COLUMNAS.length).setValues([COLUMNAS]);
+    hoja.getRange(1, 1, 1, columnasDeseadas.length).setValues([columnasDeseadas]);
     hoja.setFrozenRows(1);
     return;
   }
@@ -434,7 +489,7 @@ function asegurarColumnas_(hoja) {
       return String(valor || "").trim();
     });
 
-  const faltantes = COLUMNAS.filter(function(columna) {
+  const faltantes = columnasDeseadas.filter(function(columna) {
     return encabezadosActuales.indexOf(columna) === -1;
   });
 
@@ -447,7 +502,7 @@ function asegurarColumnas_(hoja) {
 }
 
 function obtenerMapaEncabezados_(hoja) {
-  asegurarColumnas_(hoja);
+  asegurarColumnas_(hoja, COLUMNAS);
 
   const encabezados = hoja
     .getRange(1, 1, 1, hoja.getLastColumn())
@@ -478,6 +533,58 @@ function escribirFilaPorEncabezado_(hoja, datos) {
   });
 
   hoja.getRange(fila, 1, 1, valores.length).setValues([valores]);
+}
+
+function buscarFilaPorFolio_(hoja, folio) {
+  const mapa = obtenerMapaEncabezados_(hoja);
+  const colFolio = mapa["Folio pedido"];
+  const ultimaFila = hoja.getLastRow();
+
+  if (!colFolio || ultimaFila < 2) return 0;
+
+  const folios = hoja
+    .getRange(2, colFolio, ultimaFila - 1, 1)
+    .getValues();
+
+  for (let i = 0; i < folios.length; i++) {
+    if (String(folios[i][0]).trim() === folio) {
+      return i + 2;
+    }
+  }
+
+  return 0;
+}
+
+function obtenerCeldaPorMapa_(hoja, fila, mapa, columna) {
+  const col = mapa[columna];
+  if (!col) return "";
+  return hoja.getRange(fila, col).getValue();
+}
+
+function setCeldaPorMapa_(hoja, fila, mapa, columna, valor) {
+  const col = mapa[columna];
+  if (!col) return;
+  hoja.getRange(fila, col).setValue(valor);
+}
+
+function setFechaSiVacia_(hoja, fila, mapa, columna, fecha) {
+  const col = mapa[columna];
+  if (!col) return;
+  const actual = hoja.getRange(fila, col).getValue();
+  if (!actual) {
+    hoja.getRange(fila, col).setValue(fecha);
+  }
+}
+
+function calcularEstadoOperativo_(estado, estadoPago) {
+  if (estado === "Cancelado") return "Cancelado";
+  if (estado === "Entregado" && estadoPago === "Pagado") return "Entregado y pagado";
+  if (estado === "Entregado" && estadoPago === "Pago al retirar") return "Entregado con pago al retirar";
+  if (estadoPago === "Pagado" && estado !== "Entregado") return "Pagado pendiente entrega";
+  if (estado === "Listo para retiro/entrega") return "Listo para entregar";
+  if (estado === "En preparación") return "En preparación";
+  if (estadoPago === "Pendiente de comprobante") return "Pendiente de pago";
+  return "Pendiente de confirmación";
 }
 
 function enviarAlertaPedido_(pedido, productosTexto, filaPedido) {
@@ -513,6 +620,7 @@ function enviarAlertaPedido_(pedido, productosTexto, filaPedido) {
     "Total estimado: $" + total + "\n" +
     "Método de pago: " + pedido.metodoPago + "\n" +
     "Estado de pago: " + pedido.estadoPago + "\n" +
+    "Estado operativo: " + pedido.estadoOperativo + "\n" +
     "Requiere datos transferencia: " + (pedido.requiereDatosTransferencia ? "Sí" : "No") + "\n" +
     "Indicación de pago: " + pedido.indicacionPago + "\n" +
     "Acción sugerida: " + accionPago + "\n" +
@@ -533,6 +641,7 @@ function enviarAlertaPedido_(pedido, productosTexto, filaPedido) {
     "<p><strong>Total estimado:</strong> $" + total + "</p>" +
     "<p><strong>Método de pago:</strong> " + escaparHtml_(pedido.metodoPago) + "</p>" +
     "<p><strong>Estado de pago:</strong> " + escaparHtml_(pedido.estadoPago) + "</p>" +
+    "<p><strong>Estado operativo:</strong> " + escaparHtml_(pedido.estadoOperativo) + "</p>" +
     "<p><strong>Requiere datos transferencia:</strong> " + (pedido.requiereDatosTransferencia ? "Sí" : "No") + "</p>" +
     "<p><strong>Indicación de pago:</strong> " + escaparHtml_(pedido.indicacionPago) + "</p>" +
     "<p><strong>Acción sugerida:</strong> " + escaparHtml_(accionPago) + "</p>" +
