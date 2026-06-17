@@ -1,7 +1,7 @@
-/** Backend Google Apps Script para Tu Dulcedía. */
+/** Backend Google Apps Script para Tu Dulce Día. */
 
 const CONFIG = {
-  SPREADSHEET_ID: "1rePCmh_N_XT964-BD3BeHJfkh8YhueOD_EDVif-SGGw",
+  SPREADSHEET_ID: "1t5AAjWH1Vudf53flzfoByCMGqvDbWlBEzfVApSoWrTw",
   NOMBRE_HOJA: "Pedidos",
   NOMBRE_HOJA_HISTORIAL: "Historial pedidos",
   ESTADO_INICIAL: "Pendiente",
@@ -11,14 +11,14 @@ const CONFIG = {
 };
 
 const COLUMNAS = [
-  "Folio pedido","Estado","Estado de pago","Estado operativo","Teléfono","Nombre cliente","Fecha solicitada",
-  "Productos seleccionados","Total estimado","Método de pago","Requiere datos transferencia","Tipo entrega",
-  "Observación","Observación interna","Fecha/hora registro","Fecha confirmado","Fecha pagado","Fecha entregado",
-  "Origen","Indicación de pago","Detalle JSON"
+  "Folio pedido", "Estado", "Estado de pago", "Estado operativo", "Teléfono", "Nombre cliente", "Fecha solicitada",
+  "Productos seleccionados", "Total estimado", "Método de pago", "Requiere datos transferencia", "Tipo entrega",
+  "Observación", "Observación interna", "Fecha/hora registro", "Fecha confirmado", "Fecha pagado", "Fecha entregado",
+  "Origen", "Indicación de pago", "Detalle JSON"
 ];
-const COLUMNAS_HISTORIAL = ["Fecha/hora cambio","Folio pedido","Campo","Valor anterior","Valor nuevo","Origen","Observación interna"];
-const ESTADOS_PEDIDO = ["Pendiente","Confirmado","En preparación","Listo para retiro/entrega","Entregado","Cancelado"];
-const ESTADOS_PAGO = ["Pendiente de comprobante","Comprobante recibido","Pagado","Pago al retirar"];
+const COLUMNAS_HISTORIAL = ["Fecha/hora cambio", "Folio pedido", "Campo", "Valor anterior", "Valor nuevo", "Origen", "Observación interna"];
+const ESTADOS_PEDIDO = ["Pendiente", "Confirmado", "En preparación", "Listo para retiro/entrega", "Entregado", "Cancelado"];
+const ESTADOS_PAGO = ["Pendiente de comprobante", "Comprobante recibido", "Pagado", "Pago al retirar"];
 
 function doGet(e) {
   const p = e && e.parameter ? e.parameter : {};
@@ -30,9 +30,9 @@ function doGet(e) {
     if (action === "adminListarCatalogo") { validarAdmin_(p.token); return responderJsonp_(adminListarCatalogo_(), p.callback); }
     if (action === "adminGuardarProducto") { validarAdmin_(p.token); return responderJsonp_(adminGuardarProducto_(p), p.callback); }
     if (action === "adminGuardarDisponibilidad") { validarAdmin_(p.token); return responderJsonp_(adminGuardarDisponibilidad_(p), p.callback); }
-    return responderJsonp_({exito:true,mensaje:"Web App activo."}, p.callback);
+    return responderJsonp_({ exito: true, mensaje: "Web App activo." }, p.callback);
   } catch (error) {
-    return responderJsonp_({exito:false,mensaje:error.message || "Error desconocido."}, p.callback);
+    return responderJsonp_({ exito: false, mensaje: error.message || "Error desconocido." }, p.callback);
   }
 }
 
@@ -117,9 +117,9 @@ function doPost(e) {
     });
 
     try { enviarAlertaPedido_(detallePedido, productosTexto, filaPedido); } catch (errorAlerta) { console.error(errorAlerta.message); }
-    return responderJson_({exito:true,mensaje:"Pedido registrado correctamente.",folio:folioPedido,fila:filaPedido,total:totalCalculado});
+    return responderJson_({ exito: true, mensaje: "Pedido registrado correctamente.", folio: folioPedido, fila: filaPedido, total: totalCalculado });
   } catch (error) {
-    return responderJson_({exito:false,mensaje:error.message || "Error desconocido al registrar el pedido."});
+    return responderJson_({ exito: false, mensaje: error.message || "Error desconocido al registrar el pedido." });
   } finally {
     try { lock.releaseLock(); } catch (errorLock) {}
   }
@@ -136,13 +136,29 @@ function migrarHojaPedidos() {
 }
 
 function probarEnvioCorreo() {
-  MailApp.sendEmail({to:CONFIG.EMAIL_ALERTA,subject:"Prueba alerta Tu Dulcedía",body:"MailApp autorizado correctamente.",name:"Tu Dulcedía Pedidos"});
+  MailApp.sendEmail({ to: CONFIG.EMAIL_ALERTA, subject: "Prueba alerta Tu Dulce Día", body: "MailApp autorizado correctamente.", name: "Tu Dulce Día Pedidos" });
   return "Correo de prueba enviado a " + CONFIG.EMAIL_ALERTA;
 }
 
 function probarRegistroManual() {
-  const pedidoPrueba = {nombreCliente:"Cliente prueba Apps Script",telefonoCliente:"+56 9 0000 0000",fechaSolicitada:"2026-06-20",productosSeleccionados:[{id:"galleta-vainilla-chips",nombre:"Galleta de vainilla con chips",categoria:"galleta",precio:500,cantidad:6,subtotal:3000},{id:"pan-masa-madre-1kg",nombre:"Pan de masa madre 1 kg aprox.",categoria:"pan",precio:4000,cantidad:1,subtotal:4000}],observacion:"Pedido de prueba creado desde Apps Script",totalEstimado:7000,metodoPago:"Transferencia bancaria",estadoPago:"Pendiente de comprobante",requiereDatosTransferencia:true,entregaSeparada:false,notaEntrega:"Pedido conjunto: entregar galletas junto con el pan.",origen:"Prueba manual Apps Script"};
-  return doPost({postData:{contents:JSON.stringify(pedidoPrueba)}});
+  const pedidoPrueba = {
+    nombreCliente: "Cliente prueba Apps Script",
+    telefonoCliente: "+56 9 0000 0000",
+    fechaSolicitada: "2026-06-20",
+    productosSeleccionados: [
+      { id: "galleta-vainilla-chips", nombre: "Galleta de vainilla con chips", categoria: "galleta", precio: 550, cantidad: 6, subtotal: 3300 },
+      { id: "pan-masa-madre-1kg", nombre: "Pan de masa madre 1 kg aprox.", categoria: "pan", precio: 4000, cantidad: 1, subtotal: 4000 }
+    ],
+    observacion: "Pedido de prueba creado desde Apps Script",
+    totalEstimado: 7300,
+    metodoPago: "Transferencia bancaria",
+    estadoPago: "Pendiente de comprobante",
+    requiereDatosTransferencia: true,
+    entregaSeparada: false,
+    notaEntrega: "Pedido conjunto: entregar galletas junto con el pan.",
+    origen: "Prueba manual Apps Script"
+  };
+  return doPost({ postData: { contents: JSON.stringify(pedidoPrueba) } });
 }
 
 function adminListarPedidos_() {
@@ -150,10 +166,11 @@ function adminListarPedidos_() {
   const hoja = obtenerHojaPedidos_(libro);
   const ultimaFila = hoja.getLastRow();
   const ultimaColumna = hoja.getLastColumn();
-  if (ultimaFila < 2) return {exito:true,pedidos:[]};
-  const encabezados = hoja.getRange(1,1,1,ultimaColumna).getValues()[0].map(function(v){return String(v||"").trim();});
-  const valores = hoja.getRange(2,1,ultimaFila-1,ultimaColumna).getValues();
-  const indice = {}; encabezados.forEach(function(n,i){if(n) indice[n]=i;});
+  if (ultimaFila < 2) return { exito: true, pedidos: [] };
+  const encabezados = hoja.getRange(1, 1, 1, ultimaColumna).getValues()[0].map(function(v) { return String(v || "").trim(); });
+  const valores = hoja.getRange(2, 1, ultimaFila - 1, ultimaColumna).getValues();
+  const indice = {};
+  encabezados.forEach(function(n, i) { if (n) indice[n] = i; });
   const pedidos = valores.map(function(fila) {
     const estado = obtenerValorFila_(fila, indice, "Estado") || "Pendiente";
     const estadoPago = obtenerValorFila_(fila, indice, "Estado de pago") || "";
@@ -182,7 +199,7 @@ function adminListarPedidos_() {
     };
   });
   pedidos.reverse();
-  return {exito:true,pedidos:pedidos.slice(0,150)};
+  return { exito: true, pedidos: pedidos.slice(0, 150) };
 }
 
 function adminActualizarPedido_(p) {
@@ -214,8 +231,8 @@ function adminActualizarPedido_(p) {
   if (estadoFinal !== "Pendiente") setFechaSiVacia_(hoja, fila, mapa, "Fecha confirmado", ahora);
   if (pagoFinal === "Pagado") setFechaSiVacia_(hoja, fila, mapa, "Fecha pagado", ahora);
   if (estadoFinal === "Entregado") setFechaSiVacia_(hoja, fila, mapa, "Fecha entregado", ahora);
-  if (cambios.length) historial.getRange(historial.getLastRow()+1,1,cambios.length,COLUMNAS_HISTORIAL.length).setValues(cambios);
-  return {exito:true,mensaje:"Pedido actualizado correctamente.",folio:folio,estado:estadoFinal,estadoPago:pagoFinal,estadoOperativo:opFinal};
+  if (cambios.length) historial.getRange(historial.getLastRow() + 1, 1, cambios.length, COLUMNAS_HISTORIAL.length).setValues(cambios);
+  return { exito: true, mensaje: "Pedido actualizado correctamente.", folio: folio, estado: estadoFinal, estadoPago: pagoFinal, estadoOperativo: opFinal };
 }
 
 function validarAdmin_(token) {
@@ -224,23 +241,62 @@ function validarAdmin_(token) {
   if (!token || token !== conf) throw new Error("Clave admin inválida.");
 }
 
-function obtenerHojaPedidos_(libro) { let hoja = libro.getSheetByName(CONFIG.NOMBRE_HOJA); if (!hoja) hoja = libro.insertSheet(CONFIG.NOMBRE_HOJA); asegurarColumnas_(hoja, COLUMNAS); return hoja; }
-function obtenerHojaHistorial_(libro) { let hoja = libro.getSheetByName(CONFIG.NOMBRE_HOJA_HISTORIAL); if (!hoja) hoja = libro.insertSheet(CONFIG.NOMBRE_HOJA_HISTORIAL); asegurarColumnas_(hoja, COLUMNAS_HISTORIAL); hoja.setFrozenRows(1); return hoja; }
+function obtenerHojaPedidos_(libro) {
+  let hoja = libro.getSheetByName(CONFIG.NOMBRE_HOJA);
+  if (!hoja) hoja = libro.insertSheet(CONFIG.NOMBRE_HOJA);
+  asegurarColumnas_(hoja, COLUMNAS);
+  return hoja;
+}
+
+function obtenerHojaHistorial_(libro) {
+  let hoja = libro.getSheetByName(CONFIG.NOMBRE_HOJA_HISTORIAL);
+  if (!hoja) hoja = libro.insertSheet(CONFIG.NOMBRE_HOJA_HISTORIAL);
+  asegurarColumnas_(hoja, COLUMNAS_HISTORIAL);
+  hoja.setFrozenRows(1);
+  return hoja;
+}
 
 function asegurarColumnas_(hoja, columnas) {
-  if (hoja.getLastRow() === 0) { hoja.getRange(1,1,1,columnas.length).setValues([columnas]); hoja.setFrozenRows(1); return; }
-  const actuales = hoja.getRange(1,1,1,Math.max(hoja.getLastColumn(),1)).getValues()[0].map(function(v){return String(v||"").trim();});
-  const faltantes = columnas.filter(function(c){return actuales.indexOf(c) === -1;});
-  if (faltantes.length) hoja.getRange(1,hoja.getLastColumn()+1,1,faltantes.length).setValues([faltantes]);
+  if (hoja.getLastRow() === 0) {
+    hoja.getRange(1, 1, 1, columnas.length).setValues([columnas]);
+    hoja.setFrozenRows(1);
+    return;
+  }
+  const actuales = hoja.getRange(1, 1, 1, Math.max(hoja.getLastColumn(), 1)).getValues()[0].map(function(v) { return String(v || "").trim(); });
+  const faltantes = columnas.filter(function(c) { return actuales.indexOf(c) === -1; });
+  if (faltantes.length) hoja.getRange(1, hoja.getLastColumn() + 1, 1, faltantes.length).setValues([faltantes]);
   hoja.setFrozenRows(1);
 }
 
-function obtenerMapaEncabezados_(hoja) { asegurarColumnas_(hoja, COLUMNAS); const h=hoja.getRange(1,1,1,hoja.getLastColumn()).getValues()[0]; const m={}; h.forEach(function(n,i){n=String(n||"").trim(); if(n) m[n]=i+1;}); return m; }
-function escribirFilaPorEncabezado_(hoja, datos) { const mapa=obtenerMapaEncabezados_(hoja); const fila=hoja.getLastRow()+1; const vals=new Array(hoja.getLastColumn()).fill(""); Object.keys(datos).forEach(function(k){ if(mapa[k]) vals[mapa[k]-1]=datos[k]; }); hoja.getRange(fila,1,1,vals.length).setValues([vals]); }
-function buscarFilaPorFolio_(hoja, folio) { const mapa=obtenerMapaEncabezados_(hoja); const col=mapa["Folio pedido"]; const last=hoja.getLastRow(); if(!col||last<2)return 0; const vals=hoja.getRange(2,col,last-1,1).getValues(); for(let i=0;i<vals.length;i++) if(String(vals[i][0]).trim()===folio) return i+2; return 0; }
-function obtenerCeldaPorMapa_(hoja,fila,mapa,col){ return mapa[col] ? hoja.getRange(fila,mapa[col]).getValue() : ""; }
-function setCeldaPorMapa_(hoja,fila,mapa,col,val){ if(mapa[col]) hoja.getRange(fila,mapa[col]).setValue(val); }
-function setFechaSiVacia_(hoja,fila,mapa,col,fecha){ if(!mapa[col])return; const actual=hoja.getRange(fila,mapa[col]).getValue(); if(!actual) hoja.getRange(fila,mapa[col]).setValue(fecha); }
+function obtenerMapaEncabezados_(hoja) {
+  asegurarColumnas_(hoja, COLUMNAS);
+  const h = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0];
+  const m = {};
+  h.forEach(function(n, i) { n = String(n || "").trim(); if (n) m[n] = i + 1; });
+  return m;
+}
+
+function escribirFilaPorEncabezado_(hoja, datos) {
+  const mapa = obtenerMapaEncabezados_(hoja);
+  const fila = hoja.getLastRow() + 1;
+  const vals = new Array(hoja.getLastColumn()).fill("");
+  Object.keys(datos).forEach(function(k) { if (mapa[k]) vals[mapa[k] - 1] = datos[k]; });
+  hoja.getRange(fila, 1, 1, vals.length).setValues([vals]);
+}
+
+function buscarFilaPorFolio_(hoja, folio) {
+  const mapa = obtenerMapaEncabezados_(hoja);
+  const col = mapa["Folio pedido"];
+  const last = hoja.getLastRow();
+  if (!col || last < 2) return 0;
+  const vals = hoja.getRange(2, col, last - 1, 1).getValues();
+  for (let i = 0; i < vals.length; i++) if (String(vals[i][0]).trim() === folio) return i + 2;
+  return 0;
+}
+
+function obtenerCeldaPorMapa_(hoja, fila, mapa, col) { return mapa[col] ? hoja.getRange(fila, mapa[col]).getValue() : ""; }
+function setCeldaPorMapa_(hoja, fila, mapa, col, val) { if (mapa[col]) hoja.getRange(fila, mapa[col]).setValue(val); }
+function setFechaSiVacia_(hoja, fila, mapa, col, fecha) { if (!mapa[col]) return; const actual = hoja.getRange(fila, mapa[col]).getValue(); if (!actual) hoja.getRange(fila, mapa[col]).setValue(fecha); }
 
 function calcularEstadoOperativo_(estado, pago) {
   if (estado === "Cancelado") return "Cancelado";
@@ -276,14 +332,7 @@ function normalizarProductosPedido_(productos, catalogo) {
     const precio = Number(info.precio || producto.precio || 0);
     const subtotal = precio * cantidad;
     if (!precio || precio < 0) throw new Error("Precio inválido para producto " + (id || producto.nombre || "sin ID") + ".");
-    return {
-      id: id,
-      nombre: info.nombre || producto.nombre || "Producto sin nombre",
-      categoria: info.categoria || producto.categoria || "",
-      precio: precio,
-      cantidad: cantidad,
-      subtotal: subtotal
-    };
+    return { id: id, nombre: info.nombre || producto.nombre || "Producto sin nombre", categoria: info.categoria || producto.categoria || "", precio: precio, cantidad: cantidad, subtotal: subtotal };
   });
 }
 
@@ -320,9 +369,7 @@ function buscarPedidoDuplicadoReciente_(hoja, firma, minutos) {
     }
     try {
       const detalle = JSON.parse(fila[colJson - 1] || "{}");
-      if (detalle.firmaPedido === firma) {
-        return { fila: start + i, folio: fila[colFolio - 1] || detalle.folioPedido || "" };
-      }
+      if (detalle.firmaPedido === firma) return { fila: start + i, folio: fila[colFolio - 1] || detalle.folioPedido || "" };
     } catch (error) {}
   }
   return null;
@@ -333,20 +380,26 @@ function enviarAlertaPedido_(pedido, productosTexto, filaPedido) {
   const urlSheet = "https://docs.google.com/spreadsheets/d/" + CONFIG.SPREADSHEET_ID + "/edit";
   const total = Number(pedido.totalEstimado || 0).toLocaleString("es-CL");
   const etiquetaPago = pedido.metodoPago === "Transferencia bancaria" ? "[TRANSFERENCIA]" : "[PAGO AL RETIRAR]";
-  const asunto = etiquetaPago + " Nuevo pedido " + pedido.folioPedido + " - Tu Dulcedía";
+  const asunto = etiquetaPago + " Nuevo pedido " + pedido.folioPedido + " - Tu Dulce Día";
   const tel = normalizarTelefonoWhatsapp_(pedido.telefonoCliente);
   const msgW = "Hola " + pedido.nombreCliente + ", recibimos tu pedido " + pedido.folioPedido + ". Total estimado: $" + total + ". Te confirmaremos disponibilidad durante el día. Muchas gracias.";
   const linkW = tel ? "https://wa.me/" + tel + "?text=" + encodeURIComponent(msgW) : "";
-  const cuerpo = etiquetaPago + " Nuevo pedido recibido en Tu Dulcedía\n\nFolio: " + pedido.folioPedido + "\nCliente: " + pedido.nombreCliente + "\nTeléfono: " + (pedido.telefonoCliente || "No indicado") + "\nFecha solicitada: " + pedido.fechaSolicitada + "\nProductos: " + productosTexto + "\nObservación: " + (pedido.observacion || "Sin observación") + "\nTotal estimado: $" + total + "\nMétodo de pago: " + pedido.metodoPago + "\nEstado de pago: " + pedido.estadoPago + "\nEstado operativo: " + pedido.estadoOperativo + "\nTipo entrega: " + pedido.tipoEntrega + "\nFila: " + filaPedido + "\n\nVer pedidos:\n" + urlSheet + "\n\n" + (linkW ? "Responder por WhatsApp:\n" + linkW : "Sin link de WhatsApp.");
+  const cuerpo = etiquetaPago + " Nuevo pedido recibido en Tu Dulce Día\n\nFolio: " + pedido.folioPedido + "\nCliente: " + pedido.nombreCliente + "\nTeléfono: " + (pedido.telefonoCliente || "No indicado") + "\nFecha solicitada: " + pedido.fechaSolicitada + "\nProductos: " + productosTexto + "\nObservación: " + (pedido.observacion || "Sin observación") + "\nTotal estimado: $" + total + "\nMétodo de pago: " + pedido.metodoPago + "\nEstado de pago: " + pedido.estadoPago + "\nEstado operativo: " + pedido.estadoOperativo + "\nTipo entrega: " + pedido.tipoEntrega + "\nFila: " + filaPedido + "\n\nVer pedidos:\n" + urlSheet + "\n\n" + (linkW ? "Responder por WhatsApp:\n" + linkW : "Sin link de WhatsApp.");
   const html = "<h2>" + escaparHtml_(etiquetaPago) + " Nuevo pedido recibido</h2><p><strong>Folio:</strong> " + escaparHtml_(pedido.folioPedido) + "</p><p><strong>Cliente:</strong> " + escaparHtml_(pedido.nombreCliente) + "</p><p><strong>Total:</strong> $" + total + "</p><p><strong>Productos:</strong> " + escaparHtml_(productosTexto) + "</p><p><a href='" + urlSheet + "'>Abrir Google Sheets</a></p>" + (linkW ? "<p><a href='" + linkW + "'>Responder por WhatsApp</a></p>" : "");
-  MailApp.sendEmail({to:CONFIG.EMAIL_ALERTA,subject:asunto,body:cuerpo,htmlBody:html,name:"Tu Dulcedía Pedidos"});
+  MailApp.sendEmail({ to: CONFIG.EMAIL_ALERTA, subject: asunto, body: cuerpo, htmlBody: html, name: "Tu Dulce Día Pedidos" });
 }
 
-function validarPedido_(pedido) { if(!pedido||typeof pedido!=="object") throw new Error("El pedido recibido no es válido."); if(!pedido.nombreCliente||!String(pedido.nombreCliente).trim()) throw new Error("Falta el nombre del cliente."); if(!pedido.fechaSolicitada) throw new Error("Falta la fecha solicitada."); if(!Array.isArray(pedido.productosSeleccionados)||!pedido.productosSeleccionados.length) throw new Error("El pedido no tiene productos seleccionados."); }
-function generarFolio_(filaPedido) { return "TD-" + String(Math.max(1, filaPedido - 1)).padStart(4,"0"); }
-function normalizarTelefonoWhatsapp_(telefono) { if(!telefono)return""; let x=String(telefono).replace(/\D/g,""); if(!x)return""; if(x.startsWith("56"))return x; if(x.startsWith("9")&&x.length===9)return"56"+x; if(x.startsWith("0"))x=x.replace(/^0+/,""); return x.length>=8&&x.length<=9?"56"+x:x; }
-function obtenerValorFila_(fila, indice, col) { const p=indice[col]; return p===undefined?"":fila[p]; }
-function formatearValor_(valor) { if(Object.prototype.toString.call(valor)==="[object Date]") return Utilities.formatDate(valor, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"); return valor || ""; }
-function escaparHtml_(texto) { return String(texto).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;"); }
+function validarPedido_(pedido) {
+  if (!pedido || typeof pedido !== "object") throw new Error("El pedido recibido no es válido.");
+  if (!pedido.nombreCliente || !String(pedido.nombreCliente).trim()) throw new Error("Falta el nombre del cliente.");
+  if (!pedido.fechaSolicitada) throw new Error("Falta la fecha solicitada.");
+  if (!Array.isArray(pedido.productosSeleccionados) || !pedido.productosSeleccionados.length) throw new Error("El pedido no tiene productos seleccionados.");
+}
+
+function generarFolio_(filaPedido) { return "TD-" + String(Math.max(1, filaPedido - 1)).padStart(4, "0"); }
+function normalizarTelefonoWhatsapp_(telefono) { if (!telefono) return ""; let x = String(telefono).replace(/\D/g, ""); if (!x) return ""; if (x.startsWith("56")) return x; if (x.startsWith("9") && x.length === 9) return "56" + x; if (x.startsWith("0")) x = x.replace(/^0+/, ""); return x.length >= 8 && x.length <= 9 ? "56" + x : x; }
+function obtenerValorFila_(fila, indice, col) { const p = indice[col]; return p === undefined ? "" : fila[p]; }
+function formatearValor_(valor) { if (Object.prototype.toString.call(valor) === "[object Date]") return Utilities.formatDate(valor, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"); return valor || ""; }
+function escaparHtml_(texto) { return String(texto).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"); }
 function responderJson_(objeto) { return ContentService.createTextOutput(JSON.stringify(objeto)).setMimeType(ContentService.MimeType.JSON); }
-function responderJsonp_(objeto, callback) { const json=JSON.stringify(objeto); if(callback) return ContentService.createTextOutput(String(callback)+"("+json+");").setMimeType(ContentService.MimeType.JAVASCRIPT); return responderJson_(objeto); }
+function responderJsonp_(objeto, callback) { const json = JSON.stringify(objeto); if (callback) return ContentService.createTextOutput(String(callback) + "(" + json + ");").setMimeType(ContentService.MimeType.JAVASCRIPT); return responderJson_(objeto); }
