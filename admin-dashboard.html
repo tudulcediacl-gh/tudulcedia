@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-<header class="wrap"><section class="box hero"><div><span class="pill info">Backend fijo actualizado</span><h1>Dashboard operativo</h1><div class="muted">Pedidos, pagos, estados, WhatsApp con transferencia, pedido anulado y exportación.</div></div><div class="actions"><a class="btn secondary" href="./panel-td-privado-2026.html">Panel privado</a><a class="btn secondary" href="./admin-catalogo.html">Admin catálogo</a><button class="red" id="forget">Olvidar clave</button></div></section></header>
+<header class="wrap"><section class="box hero"><div><span class="pill info">Backend oficial fijo</span><h1>Dashboard operativo</h1><div class="muted">Pedidos, pagos, estados, WhatsApp con transferencia, pedido anulado y exportación.</div></div><div class="actions"><a class="btn secondary" href="./panel-td-privado-2026.html">Panel privado</a><a class="btn secondary" href="./admin-catalogo.html">Admin catálogo</a><button class="red" id="forget">Olvidar clave</button></div></section></header>
 <main class="wrap">
 <section class="box"><div class="grid login"><div><label>Clave admin</label><input id="token" type="password" autocomplete="current-password"></div><button class="primary" id="load">Cargar</button><button class="secondary" id="refresh">Refrescar</button></div><div id="msg" class="msg"></div></section>
 <section id="kpis" class="grid kpis"></section>
@@ -18,7 +18,7 @@
 <section class="box"><div class="hero"><div><h2>Tabla editable</h2><p class="muted">Usar WA solo si el cliente ya inició conversación o espera ese seguimiento.</p><div class="legend"><span class="pill warn">Conf/Pago = confirmado sin pago</span><span class="pill purple">P/PE = pagado pendiente entrega</span><span class="pill bad">Pedido Anulado = cancelado operativo con historial</span></div></div><span class="pill" id="count">0 pedidos</span></div><div class="scroll"><table><thead><tr><th>Folio</th><th>Cliente</th><th>Fecha</th><th>Método</th><th>Productos</th><th>Total</th><th>Operativo</th><th>Pedido</th><th>Pago</th><th>Obs.</th><th>Acciones</th></tr></thead><tbody id="tbody"></tbody></table></div></section>
 </main>
 <script>
-const URL_WEB_APP="https://script.google.com/macros/s/AKfycbzjjc1ny4zZen6XYPDFVMqBiKZhhfpqa6ivr75vXmJEcDyHimIcalBngJ4hCDS3q/exec";
+const URL_WEB_APP="https://script.google.com/macros/s/AKfycbzmPICimq95KQ4GLloWbgeoonhTWBjzUM7J7kMbz32r9qiooqzC_MY4e2IADroA8Rnl/exec";
 const WA_BACKUP="56930210411";
 const ORDER=["Pendiente","Confirmado","En preparación","Listo para retiro/entrega","Entregado","Cancelado"];
 const PAY=["Pendiente de comprobante","Comprobante recibido","Pagado","Pago al retirar"];
