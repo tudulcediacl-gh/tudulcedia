@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Fase 3 Dashboard | Tu Dulce Día</title>
+  <style>
+    :root{--bg:#fff8ec;--card:#fffdf8;--line:#ead8bd;--text:#563820;--muted:#7d5b3f;--acc:#b8653b;--ok:#48663f;--bad:#9f3d31;--info:#315d88;--shadow:#56382022}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,var(--bg),#f3e4cb);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}.wrap{width:min(1040px,calc(100% - 32px));margin:auto;padding:28px 0 70px}.card{background:#ffffffdd;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 14px 34px var(--shadow);margin:14px 0}h1{margin:0 0 8px;font-size:clamp(1.9rem,4vw,2.8rem)}h2{margin:0 0 10px}.muted{color:var(--muted);font-weight:800}.pill{display:inline-flex;padding:7px 11px;border-radius:999px;font-weight:1000;background:#e7f0f8;color:var(--info);margin-bottom:10px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.check{background:#fffdf8;border:1px solid var(--line);border-radius:18px;padding:14px}.check strong{display:block;margin-bottom:5px}.check ul{margin:8px 0 0;padding-left:20px;color:var(--muted);font-weight:750}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}a{border-radius:999px;padding:12px 16px;text-decoration:none;font-weight:1000;display:inline-flex;justify-content:center;align-items:center}.primary{background:var(--acc);color:#fff}.secondary{background:#f1dfc8;color:var(--text)}.green{background:var(--ok);color:#fff}.warn{background:#fff2df;color:#8f492b}.status{display:grid;gap:8px}.status div{border:1px solid var(--line);background:#fffdf8;border-radius:16px;padding:12px;font-weight:850}@media(max-width:760px){.grid{grid-template-columns:1fr}.actions a{width:100%}.wrap{width:calc(100% - 22px)}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <span class="pill">Fase 3 · Dashboard y administración</span>
+      <h1>Revisión operativa</h1>
+      <p class="muted">Panel auxiliar para validar que los pedidos del catálogo Supabase se gestionen bien en el dashboard actual. No reemplaza el dashboard productivo.</p>
+      <div class="actions">
+        <a class="primary" href="admin-dashboard.html">Abrir dashboard actual</a>
+        <a class="secondary" href="catalogo-supabase.html">Catálogo Supabase</a>
+        <a class="green" href="panel-td-privado-2026.html">Panel privado</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Checklist principal</h2>
+      <div class="grid">
+        <article class="check"><strong>Pedido solo galletas</strong><ul><li>Visible en dashboard</li><li>Total correcto</li><li>Fecha correcta</li><li>WhatsApp funciona</li></ul></article>
+        <article class="check"><strong>Pedido solo pan</strong><ul><li>Visible en dashboard</li><li>Fecha mínima 3 días</li><li>Producto claro</li><li>WhatsApp funciona</li></ul></article>
+        <article class="check"><strong>Pedido mixto</strong><ul><li>Visible en dashboard</li><li>Total correcto</li><li>Fecha mínima 3 días</li><li>Nota de entrega revisable</li></ul></article>
+        <article class="check"><strong>Pagos</strong><ul><li>Transferencia envía datos</li><li>Pago al retirar no exige comprobante</li><li>Estados de pago editables</li></ul></article>
+        <article class="check"><strong>Anulación</strong><ul><li>No borra el pedido</li><li>No suma ingreso</li><li>No suma activo</li><li>Guarda motivo</li></ul></article>
+        <article class="check"><strong>Exportación</strong><ul><li>CSV incluye pedidos</li><li>Total considerado correcto</li><li>Estados operativos correctos</li></ul></article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Mejoras a implementar en dashboard actual</h2>
+      <div class="status">
+        <div>1. Mostrar origen cuando el pedido venga desde catálogo Supabase.</div>
+        <div>2. Agregar búsqueda/filtro rápido por “Supabase”.</div>
+        <div>3. Mostrar tipo de pedido: galletas, pan o mixto.</div>
+        <div>4. Mostrar nota de entrega/separación cuando aplique.</div>
+        <div>5. Mantener WhatsApp dashboard como negocio → cliente.</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
