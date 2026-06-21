@@ -13,8 +13,8 @@
 <body>
   <main class="wrap">
     <h1>Formulario Supabase Test</h1>
-    <p class="lead">Productos desde Supabase + carrito + payload. Reglas: galletas 1 día, pan 3 días.</p>
-    <div class="notice">Corrección aplicada: separar empaque solo aparece en pedidos mixtos de pan + galletas. Todavía no envía a Apps Script.</div>
+    <p class="lead">Productos desde Supabase + carrito + pedido real de prueba en Apps Script.</p>
+    <div class="notice">Test controlado: registra pedidos en Apps Script actual. El catálogo productivo sigue intacto.</div>
     <div class="grid">
       <section class="box"><h2>Productos activos</h2><div id="status" class="msg">Cargando productos...</div><div id="products" class="products"></div></section>
       <aside class="box"><h2>Pedido</h2><div id="summary" class="summary"></div><div id="ruleHint" class="hint">Selecciona productos para calcular anticipación.</div><form id="form">
@@ -45,8 +45,10 @@
     function applyRules(items){const r=rules(items), date=$('#date');date.min=minDate(r.minDays);if(date.value&&date.value<date.min)date.value='';$('#splitBox').classList.toggle('show',r.isMixed);if(!r.isMixed){const no=document.querySelector('input[name="split"][value="no"]');if(no)no.checked=true}$('#ruleHint').textContent=items.length?`${r.tipo}: mínimo ${r.minDays} día${r.minDays>1?'s':''} de anticipación. ${r.isMixed?'Puedes elegir entregar todo junto o separar pan y galletas.':'Separar pan/galletas no aplica para este pedido.'}`:'Selecciona productos para calcular anticipación.';return r}
     function renderSummary(){const items=selected(), total=items.reduce((s,p)=>s+p.subtotal,0);applyRules(items);$('#summary').innerHTML=items.length?items.map(p=>`<div class="item"><strong>${esc(p.nombre)} x ${p.cantidad}</strong><span>${money.format(p.precio)} c/u · ${money.format(p.subtotal)}</span></div>`).join('')+`<div class="total">Total: ${money.format(total)}</div>`:'<p style="color:var(--muted);font-weight:850">Selecciona productos.</p>'}
     function buildPayload(){const productos=selected(), r=rules(productos);return {nombreCliente:$('#name').value.trim(),telefonoCliente:($('#phoneCode').value+' '+$('#phoneNumber').value).trim(),fechaSolicitada:$('#date').value,productosSeleccionados:productos,observacion:$('#obs').value.trim(),totalEstimado:productos.reduce((s,p)=>s+p.subtotal,0),metodoPago:$('#pay').value,requiereDatosTransferencia:/transfer/i.test($('#pay').value),entregaSeparada:r.isMixed&&document.querySelector('input[name="split"]:checked')?.value==='yes',notaEntrega:r.tipo,anticipacionDiasMinima:r.minDays,origen:'Catálogo Supabase test'}}
+    window.buildPayload=buildPayload;
     $('#form').onsubmit=e=>{e.preventDefault();const payload=buildPayload();let err='';if(!payload.productosSeleccionados.length)err='Selecciona al menos un producto.';else if(!payload.nombreCliente||payload.nombreCliente.length<2)err='Ingresa el nombre.';else if(!payload.fechaSolicitada)err='Selecciona fecha.';else if(payload.fechaSolicitada<minDate(payload.anticipacionDiasMinima))err=`La fecha no cumple la anticipación mínima de ${payload.anticipacionDiasMinima} día(s).`;else if(!$('#consent').checked)err='Debes aceptar contacto por WhatsApp.';$('#msg').style.display='block';if(err){$('#msg').className='msg err';$('#msg').textContent=err;$('#payload').style.display='none';return}$('#msg').className='msg ok';$('#msg').textContent='Payload generado correctamente con reglas de anticipación.';$('#payload').style.display='block';$('#payload').textContent=JSON.stringify(payload,null,2)};
     load().then(data=>{catalog=data;$('#status').className='msg ok';$('#status').textContent='OK: '+data.length+' productos activos cargados desde Supabase.';renderProducts()}).catch(e=>{$('#status').className='msg err';$('#status').textContent='Error leyendo Supabase: '+(e.message||e)});
   </script>
+  <script src="catalogo-supabase-enviar-test.js"></script>
 </body>
 </html>
