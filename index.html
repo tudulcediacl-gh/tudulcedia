@@ -10,14 +10,38 @@
   </style>
 </head>
 <body>
-  <iframe id="catalogFrame" src="index-supabase-final.html?v=20260621-textos-1" title="Catálogo Tu Dulce Día"></iframe>
+  <iframe id="catalogFrame" src="index-supabase-final.html?v=20260621-whatsapp-mixto-1" title="Catálogo Tu Dulce Día"></iframe>
   <main class="fallback" id="fallback"><section class="card"><h1>Tu Dulce Día</h1><p>No pudimos cargar el catálogo automáticamente.</p><p><a href="index-supabase-final.html">Abrir catálogo</a></p></section></main>
   <script>
     const frame=document.getElementById('catalogFrame');
+    function patchWhatsapp(){
+      try{
+        const w=frame.contentWindow;
+        if(!w||w.__tdWhatsappMixtoPatch)return;
+        w.eval(`
+          whatsappUrl = function(result,payload){
+            const entregaMixta = payload.tipoPedido === 'Mixto'
+              ? (payload.entregaSeparada ? 'Entrega: Separada (pan y galletas)' : 'Entrega: Todo junto')
+              : '';
+            const msg = [
+              'Hola! Quiero confirmar mi pedido '+(result.folio||''),
+              'Nombre: '+payload.nombreCliente,
+              'Fecha: '+payload.fechaSolicitada,
+              'Total: '+money.format(payload.totalEstimado),
+              'Tipo: '+payload.tipoPedido
+            ];
+            if(entregaMixta) msg.push(entregaMixta);
+            return 'https://api.whatsapp.com/send/?phone='+WA_NUMBER+'&text='+encodeURIComponent(msg.join('\\n'))+'&type=phone_number&app_absent=0';
+          };
+          window.__tdWhatsappMixtoPatch = true;
+        `);
+      }catch(e){}
+    }
     function polish(){
       try{
         const d=frame.contentDocument;
         if(!d)return;
+        patchWhatsapp();
         const lead=d.querySelector('section.card .lead');
         if(lead&&!d.getElementById('tdAnticipacionLead')){
           const p=d.createElement('p');
