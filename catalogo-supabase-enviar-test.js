@@ -63,15 +63,31 @@
     });
   }
 
+  function buildItemsText(payload) {
+    const items = payload.productosSeleccionados || [];
+    if (!items.length) return '';
+    return items.map(function (item) {
+      return '- ' + item.nombre + ' x ' + item.cantidad + ' = ' + money.format(item.subtotal || 0);
+    }).join('\n');
+  }
+
   function buildWhatsappUrl(folio, payload) {
     const lines = [
-      'Hola ' + payload.nombreCliente + ' 😊, te contactamos de Tu Dulce Día 🍪🥖',
-      'Tu pedido número ' + folio + ' fue recibido ✅',
+      'Hola Tu Dulce Día 😊',
+      'Hice un pedido desde el catálogo.',
+      'Folio: ' + folio,
+      'Nombre: ' + payload.nombreCliente,
       'Total estimado: ' + money.format(payload.totalEstimado),
       'Fecha solicitada: ' + payload.fechaSolicitada,
       '',
-      'Te escribimos para confirmar disponibilidad y coordinación.'
+      'Detalle:',
+      buildItemsText(payload),
+      '',
+      'Quedo atento/a a la confirmación de disponibilidad y pago.'
     ];
+    if (payload.observacion) {
+      lines.splice(lines.length - 1, 0, 'Observación: ' + payload.observacion, '');
+    }
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
   }
 
@@ -83,7 +99,7 @@
       payloadBox.style.display = 'block';
       payloadBox.textContent = JSON.stringify({ respuestaServidor: data, payload }, null, 2);
     }
-    setMsg('Pedido enviado correctamente. Folio: ' + folio + '\nPuedes abrir WhatsApp para coordinar.', 'ok');
+    setMsg('Pedido enviado correctamente. Folio: ' + folio + '\nPuedes abrir WhatsApp para avisar al negocio.', 'ok');
     const actions = document.querySelector('.actions');
     if (actions && !q('#waFinalBtn')) {
       const a = document.createElement('a');
