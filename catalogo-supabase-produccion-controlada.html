@@ -7,38 +7,27 @@
   <title>Tu Dulce Día | Catálogo Supabase Controlado</title>
   <style>
     :root{--bg:#fff8ec;--card:#fffdf8;--ink:#563820;--muted:#7d5b3f;--line:#ead8bd;--accent:#b8653b;--green:#48663f;--shadow:#56382022}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
-    .top{width:min(1040px,calc(100% - 40px));margin:0 auto;padding:22px 0 10px}
-    .hero{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px 20px;box-shadow:0 14px 34px var(--shadow)}
-    h1{margin:0 0 6px;font-size:clamp(1.7rem,3vw,2.45rem)}
-    p{margin:0;color:var(--muted);font-weight:800}
-    .badge{display:inline-flex;margin-top:12px;background:#eaf7ed;color:#166534;border:1px solid #bfe7ca;border-radius:999px;padding:8px 12px;font-weight:1000}
-    .frame-wrap{width:min(1040px,calc(100% - 40px));margin:12px auto 40px;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 14px 34px var(--shadow)}
-    iframe{display:block;width:100%;height:calc(100vh - 190px);min-height:680px;border:0;background:var(--bg)}
-    .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    a{border-radius:999px;padding:10px 14px;text-decoration:none;font-weight:1000;display:inline-flex;align-items:center;justify-content:center}
-    .primary{background:var(--accent);color:#fff}.secondary{background:#f1dfc8;color:var(--ink)}.green{background:var(--green);color:#fff}
-    @media(max-width:900px){.top,.frame-wrap{width:min(760px,calc(100% - 28px))}iframe{height:calc(100vh - 230px);min-height:760px}.hero{padding:16px}}
-    @media(max-width:640px){.top,.frame-wrap{width:calc(100% - 18px)}iframe{height:calc(100vh - 250px);min-height:850px}}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}.wrap{width:min(760px,calc(100% - 32px));margin:0 auto;padding:36px 0 70px}.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 14px 34px var(--shadow);text-align:center}h1{margin:0 0 8px;font-size:clamp(1.9rem,4vw,2.7rem)}p{margin:0;color:var(--muted);font-weight:800}.badge{display:inline-flex;margin-top:14px;background:#eaf7ed;color:#166534;border:1px solid #bfe7ca;border-radius:999px;padding:8px 12px;font-weight:1000}.actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}a{border-radius:999px;padding:14px 18px;text-decoration:none;font-weight:1000;display:inline-flex;align-items:center;justify-content:center}.primary{background:var(--accent);color:#fff}.secondary{background:#f1dfc8;color:var(--ink)}.green{background:var(--green);color:#fff}.steps{display:grid;gap:10px;margin-top:20px;text-align:left}.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 14px;color:var(--muted);font-weight:850}@media(min-width:720px){.actions{grid-template-columns:1.2fr 1fr 1fr}}@media(max-width:520px){.wrap{width:calc(100% - 20px);padding-top:20px}.card{padding:18px}}
   </style>
 </head>
 <body>
-  <header class="top">
-    <section class="hero">
+  <main class="wrap">
+    <section class="card">
       <h1>Tu Dulce Día</h1>
-      <p>Copia productiva controlada con catálogo desde Supabase y registro de pedidos en el backend actual.</p>
+      <p>Copia productiva controlada con catálogo desde Supabase y pedidos en el backend actual.</p>
       <span class="badge">Modo controlado: index.html productivo sigue intacto</span>
-      <div class="links">
-        <a class="primary" href="catalogo-supabase-form-test.html" target="_blank" rel="noopener">Abrir flujo en pestaña</a>
-        <a class="secondary" href="./">Catálogo productivo actual</a>
+      <div class="actions">
+        <a class="primary" href="catalogo-supabase-form-test.html">Entrar al catálogo Supabase</a>
+        <a class="secondary" href="./">Catálogo actual</a>
         <a class="green" href="panel-td-privado-2026.html">Panel privado</a>
       </div>
+      <div class="steps">
+        <div class="step">Supabase carga los productos activos.</div>
+        <div class="step">El carrito calcula cantidades y total.</div>
+        <div class="step">El pedido se registra en Google Sheets mediante el backend actual.</div>
+        <div class="step">WhatsApp se abre con mensaje escrito desde el cliente hacia Tu Dulce Día.</div>
+      </div>
     </section>
-  </header>
-
-  <main class="frame-wrap">
-    <iframe title="Catálogo Supabase controlado" src="catalogo-supabase-form-test.html"></iframe>
   </main>
 </body>
 </html>
