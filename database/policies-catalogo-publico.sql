@@ -6,6 +6,17 @@
 -- No abre pedidos, clientes, inventario privado ni costos.
 
 -- =========================
+-- Permisos base para PostgREST
+-- =========================
+-- Las politicas RLS definen que filas puede ver anon.
+-- Los GRANT definen que el rol anon puede consultar la tabla.
+-- Sin estos GRANT, Supabase responde 401/42501 permission denied.
+
+grant usage on schema public to anon, authenticated;
+grant select on table public.productos to anon, authenticated;
+grant select on table public.configuracion_negocio to anon, authenticated;
+
+-- =========================
 -- Productos publicos activos
 -- =========================
 
