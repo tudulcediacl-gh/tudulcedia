@@ -1,220 +1,52 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tu Dulce Día | Catálogo</title>
-  <meta name="description" content="Catálogo de Tu Dulce Día para pedidos de galletas artesanales y pan de masa madre.">
-  <style>
-    :root{--bg:#fff8ec;--card:#fffdf8;--line:#ead8bd;--text:#563820;--muted:#7d5b3f;--acc:#b8653b;--ok:#48663f;--bad:#9f3d31}
-    *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,var(--bg),#f3e4cb);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(1280px,calc(100% - 24px));margin:auto;padding:24px 0 80px}.card{background:#ffffffdd;border:1px solid var(--line);border-radius:24px;padding:18px;margin:12px 0;box-shadow:0 14px 34px #56382022}.grid{display:grid;grid-template-columns:1.45fr .85fr;gap:14px;align-items:start}.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.product{background:#fffdf8;border:1px solid var(--line);border-radius:18px;padding:12px}.product.selected{border-color:var(--acc);box-shadow:0 10px 24px #b8653b22}h1{margin:0;font-size:clamp(2rem,4vw,3rem)}h2{margin:.2em 0}.lead,.small{color:var(--muted);font-weight:850}.price{font-size:1.25rem;font-weight:1000;color:var(--acc);margin-top:8px}.row{display:flex;gap:8px;align-items:center}.phoneGrid{display:grid;grid-template-columns:150px 1fr;gap:8px}input,select,textarea{width:100%;border:1px solid #dec6a3;border-radius:12px;padding:10px;background:#fffdf8;color:var(--text);font:inherit;font-weight:750}textarea{min-height:70px}label{display:grid;gap:5px;margin:8px 0;font-weight:950}.qty{width:70px}button,a{border:0;border-radius:999px;padding:10px 13px;text-decoration:none;font-weight:950;cursor:pointer;font:inherit;display:inline-flex;align-items:center;justify-content:center}.primary{background:var(--acc);color:#fff}.primary:disabled{opacity:.65;cursor:not-allowed}.secondary{background:#f1dfc8;color:var(--text)}.green{background:var(--ok);color:#fff}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions>*{flex:1}.msg{border-radius:14px;padding:12px;font-weight:900;margin:10px 0}.err{background:#fff0ed;color:var(--bad);border:1px solid #f1c1b8}.good{background:#eaf7ed;color:var(--ok);border:1px solid #bfe7ca}.hint,.notice{background:#fff3df;border:1px solid var(--line);border-radius:14px;padding:10px;color:var(--muted);font-weight:850}.summaryItem{border-bottom:1px dashed var(--line);padding:8px 0}.total{font-size:1.35rem;font-weight:1000;color:var(--acc);margin-top:10px}.split{display:none}.split.show{display:block}@media(max-width:980px){.grid{grid-template-columns:1fr}.products{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.products{grid-template-columns:1fr}.phoneGrid{grid-template-columns:1fr}.wrap{width:calc(100% - 18px)}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tu Dulce Día | Catálogo</title>
+<meta name="description" content="Catálogo de Tu Dulce Día para pedidos de galletas artesanales y pan de masa madre.">
+<style>
+:root{--bg:#fff8ec;--line:#ead8bd;--text:#563820;--muted:#7d5b3f;--acc:#b8653b;--ok:#48663f;--bad:#9f3d31}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,var(--bg),#f3e4cb);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(1280px,calc(100% - 24px));margin:auto;padding:24px 0 80px}.card{background:#ffffffdd;border:1px solid var(--line);border-radius:24px;padding:18px;margin:12px 0;box-shadow:0 14px 34px #56382022}.grid{display:grid;grid-template-columns:1.45fr .85fr;gap:14px;align-items:start}.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.product{background:#fffdf8;border:1px solid var(--line);border-radius:18px;padding:12px}.product.selected{border-color:var(--acc);box-shadow:0 10px 24px #b8653b22}h1{margin:0;font-size:clamp(2rem,4vw,3rem)}h2{margin:.2em 0}.lead,.small{color:var(--muted);font-weight:850}.price{font-size:1.25rem;font-weight:1000;color:var(--acc);margin-top:8px}.row{display:flex;gap:8px;align-items:center}.phoneGrid{display:grid;grid-template-columns:150px 1fr;gap:8px}input,select,textarea{width:100%;border:1px solid #dec6a3;border-radius:12px;padding:10px;background:#fffdf8;color:var(--text);font:inherit;font-weight:750}textarea{min-height:70px}label{display:grid;gap:5px;margin:8px 0;font-weight:950}.qty{width:70px}.cartLine{border-bottom:1px dashed var(--line);padding:8px 0}.cartTop{display:flex;justify-content:space-between;gap:8px}.cartBtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.cartBtns button{padding:7px 10px}button,a{border:0;border-radius:999px;padding:10px 13px;text-decoration:none;font-weight:950;cursor:pointer;font:inherit;display:inline-flex;align-items:center;justify-content:center}.primary{background:var(--acc);color:#fff}.primary:disabled{opacity:.65;cursor:not-allowed}.secondary{background:#f1dfc8;color:var(--text)}.green{background:var(--ok);color:#fff}.danger{background:#fde7e2;color:var(--bad)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions>*{flex:1}.msg{border-radius:14px;padding:12px;font-weight:900;margin:10px 0}.err{background:#fff0ed;color:var(--bad);border:1px solid #f1c1b8}.good{background:#eaf7ed;color:var(--ok);border:1px solid #bfe7ca}.hint,.notice{background:#fff3df;border:1px solid var(--line);border-radius:14px;padding:10px;color:var(--muted);font-weight:850}.total{font-size:1.35rem;font-weight:1000;color:var(--acc);margin-top:10px}.split{display:none}.split.show{display:block}@media(max-width:980px){.grid{grid-template-columns:1fr}.products{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.products{grid-template-columns:1fr}.phoneGrid{grid-template-columns:1fr}.wrap{width:calc(100% - 18px)}}
+</style>
 </head>
 <body>
 <main class="wrap">
-  <section class="card">
-    <h1>Tu Dulce Día</h1>
-    <p class="lead">Galletas artesanales y pan de masa madre.</p>
-    <p class="lead">Pedidos con anticipación: galletas 24 hrs · pan 72 hrs.</p>
-    <div class="notice">Tu pedido queda sujeto a confirmación de disponibilidad. Te contactaremos por WhatsApp para coordinar pago, retiro o entrega.</div>
-  </section>
-
-  <div class="grid">
-    <section class="card">
-      <h2>Catálogo</h2>
-      <div id="catalogStatus" class="msg good">Cargando productos...</div>
-      <div id="productsBox" class="products"></div>
-    </section>
-
-    <aside class="card">
-      <h2>Tu pedido</h2>
-      <div id="summaryBox"></div>
-      <div id="ruleHint" class="hint">Selecciona productos para calcular el total.</div>
-      <form id="orderForm">
-        <label>Nombre<input id="customerName" required></label>
-        <label>WhatsApp
-          <div class="phoneGrid">
-            <select id="countryCode">
-              <option value="56" selected>Chile +56</option>
-              <option value="54">Argentina +54</option>
-              <option value="51">Perú +51</option>
-              <option value="591">Bolivia +591</option>
-              <option value="57">Colombia +57</option>
-              <option value="58">Venezuela +58</option>
-              <option value="55">Brasil +55</option>
-              <option value="52">México +52</option>
-              <option value="1">EE.UU./Canadá +1</option>
-              <option value="34">España +34</option>
-              <option value="">Otro</option>
-            </select>
-            <input id="phoneNumber" inputmode="tel" placeholder="9 1234 5678" required>
-          </div>
-        </label>
-        <label>Fecha entrega/retiro<input id="deliveryDate" type="date" required></label>
-        <label>Método de pago<select id="paymentMethod"><option>Transferencia bancaria</option><option>Pago al retirar</option></select></label>
-        <label class="split" id="splitBox">Pedido mixto<select id="splitDelivery"><option value="no">Entregar todo junto</option><option value="yes">Separar pan y galletas</option></select></label>
-        <label>Observación<textarea id="observation" placeholder="Ej: horario, referencia o detalle del pedido"></textarea></label>
-        <button id="sendBtn" class="primary" type="submit">Enviar pedido</button>
-      </form>
-      <div id="orderMsg" class="msg good" style="display:none"></div>
-    </aside>
-  </div>
+<section class="card"><h1>Tu Dulce Día</h1><p class="lead">Galletas artesanales y pan de masa madre.</p><p class="lead">Pedidos con anticipación: galletas 24 hrs · pan 72 hrs.</p><div class="notice">Tu pedido queda sujeto a confirmación de disponibilidad. Te contactaremos por WhatsApp para coordinar pago, retiro o entrega.</div></section>
+<div class="grid">
+<section class="card"><h2>Catálogo</h2><div id="catalogStatus" class="msg good">Cargando productos...</div><div id="productsBox" class="products"></div></section>
+<aside class="card"><h2>Tu pedido</h2><div id="summaryBox"><p class="lead">Sin productos.</p></div><div id="ruleHint" class="hint">Selecciona productos para calcular el total.</div><form id="orderForm"><label>Nombre<input id="customerName" required></label><label>WhatsApp<div class="phoneGrid"><select id="countryCode"><option value="56" selected>Chile +56</option><option value="54">Argentina +54</option><option value="51">Perú +51</option><option value="591">Bolivia +591</option><option value="57">Colombia +57</option><option value="58">Venezuela +58</option><option value="55">Brasil +55</option><option value="52">México +52</option><option value="1">EE.UU./Canadá +1</option><option value="34">España +34</option><option value="">Otro</option></select><input id="phoneNumber" inputmode="tel" placeholder="9 1234 5678" required></div></label><label>Fecha entrega/retiro<input id="deliveryDate" type="date" required></label><label>Método de pago<select id="paymentMethod"><option>Transferencia bancaria</option><option>Pago al retirar</option></select></label><label class="split" id="splitBox">Pedido mixto<select id="splitDelivery"><option value="no">Entregar todo junto</option><option value="yes">Separar pan y galletas</option></select></label><label>Observación<textarea id="observation" placeholder="Ej: horario, referencia o detalle del pedido"></textarea></label><button id="sendBtn" class="primary" type="submit">Enviar pedido</button></form><div id="orderMsg" class="msg good" style="display:none"></div></aside>
+</div>
 </main>
-
 <script>
 (function(){
-  var SUPABASE_URL = 'https://uhwaybppsyibiwvqyglr.supabase.co';
-  var WA_NUMBER = '56930210411';
-  var KEY = '';
-  var catalog = [];
-  var money = new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
-
-  function el(id){ return document.getElementById(id); }
-  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; }); }
-  function digits(v){ return String(v || '').replace(/[^0-9]/g,''); }
-
-  async function loadKey(){
-    if(KEY) return KEY;
-    var html = await fetch('supabase-catalogo-test.html?v=' + Date.now()).then(function(r){ return r.text(); });
-    var m = html.match(/SUPABASE_ANON_KEY\s*=\s*['"]([^'"]+)['"]/);
-    if(!m) throw new Error('No se pudo iniciar el catálogo');
-    KEY = m[1];
-    return KEY;
-  }
-
-  async function api(path, opts){
-    var key = await loadKey();
-    opts = opts || {};
-    opts.headers = Object.assign({apikey:key, Authorization:'Bearer '+key, 'Content-Type':'application/json'}, opts.headers || {});
-    var r = await fetch(SUPABASE_URL + path, opts);
-    var txt = await r.text();
-    var data = null;
-    try { data = txt ? JSON.parse(txt) : null; } catch(e) { data = txt; }
-    if(!r.ok) throw new Error((data && data.message) || txt || 'Error Supabase');
-    return data;
-  }
-
-  function minDate(days){ var d = new Date(); d.setDate(d.getDate() + days); return d.toISOString().slice(0,10); }
-  function isPan(p){ return String(p.categoria || '').toLowerCase() === 'pan' || String(p.nombre || '').toLowerCase().indexOf('pan') >= 0; }
-  function isGalleta(p){ return String(p.categoria || '').toLowerCase() === 'galleta' || String(p.nombre || '').toLowerCase().indexOf('galleta') >= 0; }
-
-  function selectedItems(){
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.product.selected'));
-    return cards.map(function(card){
-      var p = catalog.find(function(x){ return x.codigo === card.getAttribute('data-code'); });
-      var q = Math.max(1, parseInt(card.querySelector('.qty').value || '1', 10) || 1);
-      return {id:p.codigo, codigo:p.codigo, nombre:p.nombre, categoria:p.categoria, precio:Number(p.precio)||0, cantidad:q, subtotal:(Number(p.precio)||0)*q};
-    });
-  }
-
-  function rules(items){
-    var pan = items.some(isPan), gal = items.some(isGalleta);
-    return {minDays: pan ? 3 : 1, isMixed: pan && gal, tipoPedido: pan && gal ? 'Mixto' : pan ? 'Pan' : gal ? 'Galletas' : 'Otro', notaEntrega: pan && gal ? 'Pedido mixto' : pan ? 'Pedido de pan' : gal ? 'Pedido de galletas' : 'Pedido'};
-  }
-
-  function renderProducts(){
-    var box = el('productsBox');
-    box.innerHTML = '';
-    catalog.forEach(function(p){
-      var article = document.createElement('article');
-      article.className = 'product';
-      article.setAttribute('data-code', p.codigo);
-      article.innerHTML = '<h3>'+esc(p.nombre)+'</h3><div class="small">'+esc(p.descripcion||'')+'</div><div class="price">'+money.format(p.precio)+'</div><div class="row"><input class="qty" type="number" min="1" value="1"><button class="secondary" type="button">Agregar al pedido</button></div>';
-      var btn = article.querySelector('button');
-      var qty = article.querySelector('.qty');
-      btn.onclick = function(){ article.classList.toggle('selected'); btn.textContent = article.classList.contains('selected') ? 'Quitar' : 'Agregar al pedido'; btn.className = article.classList.contains('selected') ? 'green' : 'secondary'; renderSummary(); };
-      qty.oninput = renderSummary;
-      box.appendChild(article);
-    });
-    renderSummary();
-  }
-
-  function renderSummary(){
-    var items = selectedItems();
-    var r = rules(items);
-    var total = items.reduce(function(s,p){ return s + p.subtotal; },0);
-    el('deliveryDate').min = minDate(r.minDays);
-    el('splitBox').classList.toggle('show', r.isMixed);
-    el('ruleHint').textContent = items.length ? (r.notaEntrega + ': mínimo ' + r.minDays + ' día(s) de anticipación.') : 'Selecciona productos para calcular el total.';
-    if(!items.length){ el('summaryBox').innerHTML = '<p class="lead">Sin productos.</p>'; return; }
-    el('summaryBox').innerHTML = items.map(function(p){ return '<div class="summaryItem"><strong>'+esc(p.nombre)+' x '+p.cantidad+'</strong><div>'+money.format(p.subtotal)+'</div></div>'; }).join('') + '<div class="total">Total '+money.format(total)+'</div>';
-  }
-
-  function phoneFull(){
-    var cc = el('countryCode').value;
-    var raw = digits(el('phoneNumber').value);
-    return cc ? cc + raw : raw;
-  }
-
-  function buildPayload(){
-    var items = selectedItems();
-    var r = rules(items);
-    return {
-      nombreCliente: el('customerName').value.trim(),
-      telefonoCliente: phoneFull(),
-      fechaSolicitada: el('deliveryDate').value,
-      metodoPago: el('paymentMethod').value,
-      requiereDatosTransferencia: el('paymentMethod').value === 'Transferencia bancaria',
-      entregaSeparada: r.isMixed && el('splitDelivery').value === 'yes',
-      notaEntrega: r.notaEntrega,
-      tipoPedido: r.tipoPedido,
-      observacion: el('observation').value.trim(),
-      productosSeleccionados: items,
-      totalEstimado: items.reduce(function(s,p){ return s + p.subtotal; },0),
-      origen: 'Catálogo web',
-      canal: 'web'
-    };
-  }
-
-  function whatsappUrl(result,payload){
-    var extra = payload.tipoPedido === 'Mixto' ? (payload.entregaSeparada ? 'Entrega: Separada (pan y galletas)' : 'Entrega: Todo junto') : '';
-    var arr = ['Hola! Quiero confirmar mi pedido '+(result.folio||''), 'Nombre: '+payload.nombreCliente, 'Fecha: '+payload.fechaSolicitada, 'Total: '+money.format(payload.totalEstimado), 'Tipo: '+payload.tipoPedido];
-    if(extra) arr.push(extra);
-    return 'https://api.whatsapp.com/send/?phone=' + WA_NUMBER + '&text=' + encodeURIComponent(arr.join('\n')) + '&type=phone_number&app_absent=0';
-  }
-
-  async function init(){
-    var status = el('catalogStatus');
-    try{
-      catalog = await api('/rest/v1/productos?select=codigo,nombre,categoria,precio,descripcion,orden,activo&activo=eq.true&order=orden.asc');
-      status.style.display = 'none';
-      renderProducts();
-    }catch(e){
-      status.style.display = 'block';
-      status.className = 'msg err';
-      status.textContent = 'No pudimos cargar el catálogo: ' + (e.message || 'intenta nuevamente.');
-    }
-  }
-
-  el('orderForm').onsubmit = async function(e){
-    e.preventDefault();
-    var payload = buildPayload();
-    var msg = el('orderMsg');
-    var btn = el('sendBtn');
-    msg.style.display = 'block';
-
-    if(!payload.productosSeleccionados.length){ msg.className='msg err'; msg.textContent='Selecciona productos.'; return; }
-    if(!payload.nombreCliente || !payload.telefonoCliente || !payload.fechaSolicitada){ msg.className='msg err'; msg.textContent='Completa nombre, WhatsApp y fecha.'; return; }
-    if(el('countryCode').value === '56' && digits(el('phoneNumber').value).length !== 9){ msg.className='msg err'; msg.textContent='Para Chile ingresa 9 dígitos, por ejemplo 954226146.'; return; }
-    if(payload.fechaSolicitada < minDate(rules(payload.productosSeleccionados).minDays)){ msg.className='msg err'; msg.textContent='Fecha no cumple anticipación mínima.'; return; }
-
-    try{
-      btn.disabled = true;
-      btn.textContent = 'Enviando...';
-      msg.className = 'msg good';
-      msg.textContent = 'Enviando pedido...';
-      var result = await api('/rest/v1/rpc/registrar_pedido_publico',{method:'POST', body:JSON.stringify({payload:payload})});
-      msg.innerHTML = 'Pedido enviado correctamente.<br><strong>Folio: '+esc(result.folio)+'</strong><br>Te contactaremos por WhatsApp para confirmar disponibilidad.<div class="actions"><a class="green" target="_blank" href="'+esc(whatsappUrl(result,payload))+'">Enviar WhatsApp</a><button class="secondary" type="button" onclick="location.reload()">Nuevo pedido</button></div>';
-    }catch(err){
-      msg.className = 'msg err';
-      msg.textContent = 'Error al enviar: ' + (err.message || 'intenta nuevamente.');
-    }finally{
-      btn.disabled = false;
-      btn.textContent = 'Enviar pedido';
-    }
-  };
-
-  init();
+var SUPABASE_URL='https://uhwaybppsyibiwvqyglr.supabase.co';
+var WA_NUMBER='56930210411';
+var KEY='';
+var catalog=[];
+var cart={};
+var money=new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
+function el(id){return document.getElementById(id)}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]})}
+function digits(v){return String(v||'').replace(/[^0-9]/g,'')}
+async function loadKey(){if(KEY)return KEY;var html=await fetch('supabase-catalogo-test.html?v='+Date.now()).then(function(r){return r.text()});var m=html.match(/SUPABASE_ANON_KEY\s*=\s*['"]([^'"]+)['"]/);if(!m)throw new Error('No se pudo iniciar el catálogo');KEY=m[1];return KEY}
+async function api(path,opts){var key=await loadKey();opts=opts||{};opts.headers=Object.assign({apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json'},opts.headers||{});var r=await fetch(SUPABASE_URL+path,opts);var txt=await r.text();var data=null;try{data=txt?JSON.parse(txt):null}catch(e){data=txt}if(!r.ok)throw new Error((data&&data.message)||txt||'Error Supabase');return data}
+function minDate(days){var d=new Date();d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+function isPan(p){return String(p.categoria||'').toLowerCase()==='pan'||String(p.nombre||'').toLowerCase().indexOf('pan')>=0}
+function isGalleta(p){return String(p.categoria||'').toLowerCase()==='galleta'||String(p.nombre||'').toLowerCase().indexOf('galleta')>=0}
+function productByCode(code){return catalog.find(function(x){return x.codigo===code})}
+function selectedItems(){return Object.keys(cart).map(function(code){var p=productByCode(code);var q=cart[code]||0;return {id:p.codigo,codigo:p.codigo,nombre:p.nombre,categoria:p.categoria,precio:Number(p.precio)||0,cantidad:q,subtotal:(Number(p.precio)||0)*q}}).filter(function(x){return x.cantidad>0})}
+function rules(items){var pan=items.some(isPan),gal=items.some(isGalleta);return {minDays:pan?3:1,isMixed:pan&&gal,tipoPedido:pan&&gal?'Mixto':pan?'Pan':gal?'Galletas':'Otro',notaEntrega:pan&&gal?'Pedido mixto':pan?'Pedido de pan':gal?'Pedido de galletas':'Pedido'}}
+function syncCards(){Array.prototype.slice.call(document.querySelectorAll('.product')).forEach(function(card){var code=card.getAttribute('data-code');var q=cart[code]||0;card.classList.toggle('selected',q>0);var btn=card.querySelector('button');btn.textContent=q>0?'Agregar otro':'Agregar al pedido';btn.className=q>0?'green':'secondary'})}
+function add(code,amount){cart[code]=(cart[code]||0)+amount;if(cart[code]<=0)delete cart[code];renderSummary();syncCards()}
+function setQty(code,q){q=Math.max(0,parseInt(q||'0',10)||0);if(q>0)cart[code]=q;else delete cart[code];renderSummary();syncCards()}
+function renderProducts(){var box=el('productsBox');box.innerHTML='';catalog.forEach(function(p){var article=document.createElement('article');article.className='product';article.setAttribute('data-code',p.codigo);article.innerHTML='<h3>'+esc(p.nombre)+'</h3><div class="small">'+esc(p.descripcion||'')+'</div><div class="price">'+money.format(p.precio)+'</div><div class="row"><input class="qty" type="number" min="1" value="1"><button class="secondary" type="button">Agregar al pedido</button></div>';var btn=article.querySelector('button');var qty=article.querySelector('.qty');btn.onclick=function(){add(p.codigo,Math.max(1,parseInt(qty.value||'1',10)||1))};box.appendChild(article)});renderSummary()}
+function renderSummary(){var items=selectedItems();var r=rules(items);var total=items.reduce(function(s,p){return s+p.subtotal},0);el('deliveryDate').min=minDate(r.minDays);el('splitBox').classList.toggle('show',r.isMixed);el('ruleHint').textContent=items.length?(r.notaEntrega+': mínimo '+r.minDays+' día(s) de anticipación.'):'Selecciona productos para calcular el total.';if(!items.length){el('summaryBox').innerHTML='<p class="lead">Sin productos.</p>';return}el('summaryBox').innerHTML=items.map(function(p){return '<div class="cartLine"><div class="cartTop"><strong>'+esc(p.nombre)+' x '+p.cantidad+'</strong><span>'+money.format(p.subtotal)+'</span></div><div class="cartBtns"><button type="button" class="secondary" data-minus="'+esc(p.codigo)+'">−</button><button type="button" class="secondary" data-plus="'+esc(p.codigo)+'">+</button><button type="button" class="danger" data-remove="'+esc(p.codigo)+'">Quitar</button></div></div>'}).join('')+'<div class="total">Total '+money.format(total)+'</div>';Array.prototype.slice.call(document.querySelectorAll('[data-minus]')).forEach(function(b){b.onclick=function(){add(b.getAttribute('data-minus'),-1)}});Array.prototype.slice.call(document.querySelectorAll('[data-plus]')).forEach(function(b){b.onclick=function(){add(b.getAttribute('data-plus'),1)}});Array.prototype.slice.call(document.querySelectorAll('[data-remove]')).forEach(function(b){b.onclick=function(){setQty(b.getAttribute('data-remove'),0)}})}
+function phoneFull(){var cc=el('countryCode').value;var raw=digits(el('phoneNumber').value);return cc?cc+raw:raw}
+function buildPayload(){var items=selectedItems();var r=rules(items);return {nombreCliente:el('customerName').value.trim(),telefonoCliente:phoneFull(),fechaSolicitada:el('deliveryDate').value,metodoPago:el('paymentMethod').value,requiereDatosTransferencia:el('paymentMethod').value==='Transferencia bancaria',entregaSeparada:r.isMixed&&el('splitDelivery').value==='yes',notaEntrega:r.notaEntrega,tipoPedido:r.tipoPedido,observacion:el('observation').value.trim(),productosSeleccionados:items,totalEstimado:items.reduce(function(s,p){return s+p.subtotal},0),origen:'Catálogo web',canal:'web'}}
+function whatsappUrl(result,payload){var extra=payload.tipoPedido==='Mixto'?(payload.entregaSeparada?'Entrega: Separada (pan y galletas)':'Entrega: Todo junto'):'';var arr=['Hola! Quiero confirmar mi pedido '+(result.folio||''),'Nombre: '+payload.nombreCliente,'Fecha: '+payload.fechaSolicitada,'Total: '+money.format(payload.totalEstimado),'Tipo: '+payload.tipoPedido];if(extra)arr.push(extra);return 'https://api.whatsapp.com/send/?phone='+WA_NUMBER+'&text='+encodeURIComponent(arr.join('\n'))+'&type=phone_number&app_absent=0'}
+async function init(){var status=el('catalogStatus');try{catalog=await api('/rest/v1/productos?select=codigo,nombre,categoria,precio,descripcion,orden,activo&activo=eq.true&order=orden.asc');status.style.display='none';renderProducts()}catch(e){status.style.display='block';status.className='msg err';status.textContent='No pudimos cargar el catálogo: '+(e.message||'intenta nuevamente.')}}
+el('orderForm').onsubmit=async function(e){e.preventDefault();var payload=buildPayload();var msg=el('orderMsg');var btn=el('sendBtn');msg.style.display='block';if(!payload.productosSeleccionados.length){msg.className='msg err';msg.textContent='Selecciona productos.';return}if(!payload.nombreCliente||!payload.telefonoCliente||!payload.fechaSolicitada){msg.className='msg err';msg.textContent='Completa nombre, WhatsApp y fecha.';return}if(el('countryCode').value==='56'&&digits(el('phoneNumber').value).length!==9){msg.className='msg err';msg.textContent='Para Chile ingresa 9 dígitos, por ejemplo 954226146.';return}if(payload.fechaSolicitada<minDate(rules(payload.productosSeleccionados).minDays)){msg.className='msg err';msg.textContent='Fecha no cumple anticipación mínima.';return}try{btn.disabled=true;btn.textContent='Enviando...';msg.className='msg good';msg.textContent='Enviando pedido...';var result=await api('/rest/v1/rpc/registrar_pedido_publico',{method:'POST',body:JSON.stringify({payload:payload})});msg.innerHTML='Pedido enviado correctamente.<br><strong>Folio: '+esc(result.folio)+'</strong><br>Te contactaremos por WhatsApp para confirmar disponibilidad.<div class="actions"><a class="green" target="_blank" href="'+esc(whatsappUrl(result,payload))+'">Enviar WhatsApp</a><button class="secondary" type="button" onclick="location.reload()">Nuevo pedido</button></div>'}catch(err){msg.className='msg err';msg.textContent='Error al enviar: '+(err.message||'intenta nuevamente.')}finally{btn.disabled=false;btn.textContent='Enviar pedido'}};
+init();
 })();
 </script>
 </body>
